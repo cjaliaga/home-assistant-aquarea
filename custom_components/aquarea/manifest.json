@@ -1,0 +1,21 @@
+{
+  "domain": "aquarea",
+  "name": "Aquarea Smart Cloud",
+  "config_flow": true,
+  "documentation": "https://www.home-assistant.io/integrations/aquarea",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "loggers": [
+    "aquarea"
+  ],
+  "dependencies": [
+    "recorder"
+  ],
+  "codeowners": [
+    "@cjaliaga"
+  ],
+  "iot_class": "cloud_polling",
+  "version": "0.0.1"
+}
