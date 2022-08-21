@@ -1,24 +1,26 @@
 """The Aquarea Smart Cloud integration."""
 from __future__ import annotations
+
 from typing import Any
 
+import aioaquarea
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-
-import aioaquarea
 from homeassistant.helpers.entity import DeviceInfo
-
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import ATTRIBUTION, DEVICES, DOMAIN, CLIENT
+from .const import ATTRIBUTION, CLIENT, DEVICES, DOMAIN
 from .coordinator import AquareaDataUpdateCoordinator
 
-# TODO List the platforms that you want to support.
-# For your initial PR, limit it to 1 platform.
-PLATFORMS: list[Platform] = [Platform.SENSOR]
+PLATFORMS: list[Platform] = [
+    Platform.SENSOR,
+    Platform.CLIMATE,
+    Platform.BINARY_SENSOR,
+    Platform.WATER_HEATER,
+]
 
 
 def initialize_data(hass: HomeAssistant, entry: ConfigEntry) -> None:
@@ -48,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Get all the devices, we will filter the disabled ones later
     devices = await client.get_devices(include_long_id=True)
 
-    # We create a Cordinator per Device and store it in the hass.data[DOMAIN] dict to be able to access it from the platform
+    # We create a Coordinator per Device and store it in the hass.data[DOMAIN] dict to be able to access it from the platform
     for device in devices:
         coordinator = AquareaDataUpdateCoordinator(
             hass=hass, entry=entry, client=client, device_info=device
@@ -83,6 +85,8 @@ class AquareaBaseEntity(CoordinatorEntity[AquareaDataUpdateCoordinator]):
             "name": self.coordinator.device.name,
             "id": self.coordinator.device.device_id,
         }
+        self._attr_unique_id = self.coordinator.device.device_id
+        self._attr_name = self.coordinator.device.name
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.coordinator.device.device_id)},
             manufacturer=self.coordinator.device.manufacturer,
@@ -90,7 +94,6 @@ class AquareaBaseEntity(CoordinatorEntity[AquareaDataUpdateCoordinator]):
             name=self.coordinator.device.name,
             sw_version=self.coordinator.device.version,
         )
-        self._attr_unique_id = self.coordinator.device.device_id
 
     async def async_added_to_hass(self) -> None:
         """When entity is added to hass."""

@@ -2,7 +2,7 @@
   "domain": "aquarea",
   "name": "Aquarea Smart Cloud",
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/aquarea",
+  "documentation": "https://github.com/cjaliaga/home-assistant-aquarea",
   "requirements": [],
   "ssdp": [],
   "zeroconf": [],

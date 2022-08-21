@@ -4,16 +4,15 @@ from __future__ import annotations
 import logging
 from typing import Any, Optional
 
+import aioaquarea
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-
-import aioaquarea
 
 from .const import DOMAIN
 
@@ -56,7 +55,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await self._api.login()
         except CannotConnect:
             errors["base"] = "cannot_connect"
-        except aioaquarea.RequestFailedError:
+        except aioaquarea.AuthenticationError:
             errors["base"] = "invalid_auth"
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception("Unexpected exception")

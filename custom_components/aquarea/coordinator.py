@@ -4,14 +4,15 @@ from __future__ import annotations
 from datetime import timedelta
 import logging
 
+import aioaquarea
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from .const import DOMAIN
-
-import aioaquarea
 
 DEFAULT_SCAN_INTERVAL_SECONDS = 10
 SCAN_INTERVAL = timedelta(seconds=DEFAULT_SCAN_INTERVAL_SECONDS)
@@ -58,6 +59,12 @@ class AquareaDataUpdateCoordinator(DataUpdateCoordinator):
                 )
             else:
                 await self.device.refresh_data()
+        except aioaquarea.AuthenticationError as err:
+            if (
+                err.error_code
+                == aioaquarea.AuthenticationErrorCodes.INVALID_USERNAME_OR_PASSWORD
+            ):
+                raise ConfigEntryAuthFailed from err
         except aioaquarea.errors.RequestFailedError as err:
             raise UpdateFailed(
                 f"Error communicating with Aquarea Smart Cloud API: {err}"
