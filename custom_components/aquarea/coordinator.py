@@ -1,16 +1,16 @@
 """Coordinator for Aquarea."""
 from __future__ import annotations
 
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import aioaquarea
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
+                                                      UpdateFailed)
 
 from .const import DOMAIN
 
@@ -60,9 +60,9 @@ class AquareaDataUpdateCoordinator(DataUpdateCoordinator):
             else:
                 await self.device.refresh_data()
         except aioaquarea.AuthenticationError as err:
-            if (
-                err.error_code
-                == aioaquarea.AuthenticationErrorCodes.INVALID_USERNAME_OR_PASSWORD
+            if err.error_code in (
+                aioaquarea.AuthenticationErrorCodes.INVALID_USERNAME_OR_PASSWORD,
+                aioaquarea.AuthenticationErrorCodes.INVALID_CREDENTIALS,
             ):
                 raise ConfigEntryAuthFailed from err
         except aioaquarea.errors.RequestFailedError as err:

@@ -4,10 +4,10 @@ from __future__ import annotations
 from typing import Any
 
 import aioaquarea
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -47,18 +47,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         client = aioaquarea.Client(session, username, password)
         hass.data[DOMAIN][entry.entry_id][CLIENT] = client
 
-    # Get all the devices, we will filter the disabled ones later
-    devices = await client.get_devices(include_long_id=True)
+    try:
+        # Get all the devices, we will filter the disabled ones later
+        devices = await client.get_devices(include_long_id=True)
 
-    # We create a Coordinator per Device and store it in the hass.data[DOMAIN] dict to be able to access it from the platform
-    for device in devices:
-        coordinator = AquareaDataUpdateCoordinator(
-            hass=hass, entry=entry, client=client, device_info=device
-        )
-        hass.data[DOMAIN][entry.entry_id][DEVICES][device.device_id] = coordinator
-        await coordinator.async_config_entry_first_refresh()
+        # We create a Coordinator per Device and store it in the hass.data[DOMAIN] dict to be able to access it from the platform
+        for device in devices:
+            coordinator = AquareaDataUpdateCoordinator(
+                hass=hass, entry=entry, client=client, device_info=device
+            )
+            hass.data[DOMAIN][entry.entry_id][DEVICES][device.device_id] = coordinator
+            await coordinator.async_config_entry_first_refresh()
 
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+        await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    except aioaquarea.AuthenticationError as err:
+        if err.error_code in (
+            aioaquarea.AuthenticationErrorCodes.INVALID_USERNAME_OR_PASSWORD,
+            aioaquarea.AuthenticationErrorCodes.INVALID_CREDENTIALS,
+        ):
+            raise ConfigEntryAuthFailed from err
 
     return True
 

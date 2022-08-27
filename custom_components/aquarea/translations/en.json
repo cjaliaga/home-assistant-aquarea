@@ -5,14 +5,21 @@
         },
         "error": {
             "cannot_connect": "Failed to connect",
-            "invalid_auth": "Invalid authentication",
+            "invalid_auth": "Invalid username or password",
             "unknown": "Unexpected error"
         },
         "step": {
             "user": {
+                "description": "Please enter your Panasonic ID and password:",
                 "data": {
                     "password": "Password",
                     "username": "Username"
+                }
+            },
+            "reauth": {
+                "description": "Please enter the password for your Panasonic ID {username}:",
+                "data": {
+                    "password": "Password"
                 }
             }
         }

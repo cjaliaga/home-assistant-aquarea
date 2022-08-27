@@ -1,13 +1,10 @@
 import logging
 
-from aioaquarea.data import DeviceAction, ExtendedOperationMode, OperationStatus
-
+from aioaquarea.data import (DeviceAction, ExtendedOperationMode,
+                             OperationStatus)
 from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
-    ClimateEntityFeature,
-    HVACAction,
-    HVACMode,
-)
+from homeassistant.components.climate.const import (ClimateEntityFeature,
+                                                    HVACAction, HVACMode)
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import TEMP_CELSIUS

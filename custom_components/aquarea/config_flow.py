@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from typing import Any, Optional
 
 import aioaquarea
+import aiohttp
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -23,10 +24,13 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 )
 
 
-class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class AquareaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Aquarea Smart Cloud."""
 
     VERSION = 1
+
+    _username: str | None = None
+    _session: aiohttp.ClientSession | None = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -42,25 +46,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 step_id="user", data_schema=STEP_USER_DATA_SCHEMA
             )
 
-        errors = {}
-
-        sess = async_create_clientsession(self.hass)
-        self._api = aioaquarea.Client(
-            sess, user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
-        )
         await self.async_set_unique_id(str.lower(user_input[CONF_USERNAME]))
         self._abort_if_unique_id_configured()
 
-        try:
-            await self._api.login()
-        except CannotConnect:
-            errors["base"] = "cannot_connect"
-        except aioaquarea.AuthenticationError:
-            errors["base"] = "invalid_auth"
-        except Exception:  # pylint: disable=broad-except
-            _LOGGER.exception("Unexpected exception")
-            errors["base"] = "unknown"
-        else:
+        errors = await self._validate_input(
+            user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+        )
+
+        if errors != {}:
             return self.async_create_entry(
                 title=user_input[CONF_USERNAME], data=user_input
             )
@@ -68,6 +61,96 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
         )
+
+    async def async_step_reauth(self, entry_data: Mapping[str, Any], user_input=None):
+        """Perform reauth upon an API authentication error."""
+        self._username = self._try_get_username(entry_data)
+
+        if entry_data:
+            errors = await self._validate_input(
+                self._username, entry_data.get(CONF_PASSWORD)
+            )
+
+            if errors != {}:
+                return await self.async_show_reauth_form(self._username, errors)
+
+            # If we get here, we have a valid login
+            return await self.async_complete_reauth(
+                self._username, entry_data[CONF_PASSWORD]
+            )
+
+        if user_input is None:
+            return await self.async_show_reauth_form(self._username)
+
+        errors = await self._validate_input(self._username, user_input[CONF_PASSWORD])
+
+        if errors != {}:
+            return await self.async_show_reauth_form(self._username, errors)
+
+        # If we get here, we have a valid login
+        return await self.async_complete_reauth(
+            self._username, user_input[CONF_PASSWORD]
+        )
+
+    async def async_complete_reauth(self, username: str, password: str) -> FlowResult:
+        """Complete reauth."""
+        entry = await self.async_set_unique_id(self.unique_id)
+        assert entry
+        self.hass.config_entries.async_update_entry(
+            entry,
+            data={
+                CONF_USERNAME: username,
+                CONF_PASSWORD: password,
+            },
+        )
+        return self.async_abort(reason="reauth_successful")
+
+    async def async_show_reauth_form(
+        self, username: str, errors: dict[str, str] | None = None
+    ) -> FlowResult:
+        """Show the reauth form."""
+        return self.async_show_form(
+            step_id="reauth",
+            description_placeholders={"username": username},
+            data_schema=vol.Schema({vol.Required(CONF_PASSWORD): str}),
+            errors=errors,
+        )
+
+    def _try_get_username(self, entry_data: Mapping[str, Any]) -> str:
+        """Try to get username from entry data or context"""
+        if self._username is not None:
+            return self._username
+
+        if entry_data and entry_data.get(CONF_USERNAME):
+            self._username = entry_data[CONF_USERNAME]
+            return self._username
+
+        if self.context.init_data and self.context.init_data.get(CONF_USERNAME):
+            self._username = self.context.init_data[CONF_USERNAME]
+            return self._username
+
+        if self.unique_id:
+            self._username = self.unique_id
+            return self._username
+
+        return None
+
+    async def _validate_input(self, username, password) -> dict[str, str]:
+        """Validate the user input allows us to connect."""
+        errors = {}
+        if self._session is None:
+            self._session = async_create_clientsession(self.hass)
+
+        self._api = aioaquarea.Client(self._session, username, password)
+        try:
+            await self._api.login()
+        except aioaquarea.AuthenticationError:
+            errors["base"] = "invalid_auth"
+        except Exception:  # pylint: disable=broad-except
+            _LOGGER.exception("Unexpected exception")
+            errors["base"] = "unknown"
+
+        return errors
 
 
 class CannotConnect(HomeAssistantError):

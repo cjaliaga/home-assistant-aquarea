@@ -2,12 +2,9 @@
 import logging
 
 from aioaquarea.data import DeviceAction, OperationStatus
-
-from homeassistant.components.water_heater import (
-    STATE_HEAT_PUMP,
-    WaterHeaterEntity,
-    WaterHeaterEntityFeature,
-)
+from homeassistant.components.water_heater import (STATE_HEAT_PUMP,
+                                                   WaterHeaterEntity,
+                                                   WaterHeaterEntityFeature)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_OFF, TEMP_CELSIUS
 from homeassistant.core import HomeAssistant, callback
