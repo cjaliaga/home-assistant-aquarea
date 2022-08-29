@@ -27,7 +27,6 @@ class AquareaDataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(
         self,
         hass: HomeAssistant,
-        *,
         entry: ConfigEntry,
         client: aioaquarea.Client,
         device_info: aioaquarea.data.DeviceInfo,
