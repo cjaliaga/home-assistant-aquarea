@@ -3,14 +3,13 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Mapping
-from typing import Any, Optional
+from typing import Any
 
 import aioaquarea
 import aiohttp
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
-from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
@@ -54,13 +53,11 @@ class AquareaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
         if errors != {}:
-            return self.async_create_entry(
-                title=user_input[CONF_USERNAME], data=user_input
+            return self.async_show_form(
+                step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
             )
 
-        return self.async_show_form(
-            step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
-        )
+        return self.async_create_entry(title=user_input[CONF_USERNAME], data=user_input)
 
     async def async_step_reauth(self, entry_data: Mapping[str, Any], user_input=None):
         """Perform reauth upon an API authentication error."""
