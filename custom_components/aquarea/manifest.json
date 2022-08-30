@@ -3,7 +3,9 @@
   "name": "Aquarea Smart Cloud",
   "config_flow": true,
   "documentation": "https://github.com/cjaliaga/home-assistant-aquarea",
-  "requirements": [],
+  "requirements": [
+    "aioaquarea==0.2.0"
+  ],
   "ssdp": [],
   "zeroconf": [],
   "homekit": {},
