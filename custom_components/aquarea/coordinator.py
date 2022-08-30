@@ -9,8 +9,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.update_coordinator import (DataUpdateCoordinator,
-                                                      UpdateFailed)
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN
 
@@ -47,6 +46,7 @@ class AquareaDataUpdateCoordinator(DataUpdateCoordinator):
 
     @property
     def device(self) -> aioaquarea.Device:
+        """Return the device."""
         return self._device
 
     async def _async_update_data(self) -> None:

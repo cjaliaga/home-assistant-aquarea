@@ -2,8 +2,11 @@ import logging
 
 from aioaquarea import DeviceAction, ExtendedOperationMode, UpdateOperationMode
 from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (ClimateEntityFeature,
-                                                    HVACAction, HVACMode)
+from homeassistant.components.climate.const import (
+    ClimateEntityFeature,
+    HVACAction,
+    HVACMode,
+)
 from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import TEMP_CELSIUS
@@ -42,6 +45,7 @@ async def async_setup_entry(
 
 
 def get_hvac_mode_from_ext_op_mode(mode: ExtendedOperationMode) -> HVACMode:
+    """Convert extended operation mode to HVAC mode."""
     if mode == ExtendedOperationMode.HEAT:
         return HVACMode.HEAT
 
@@ -55,6 +59,7 @@ def get_hvac_mode_from_ext_op_mode(mode: ExtendedOperationMode) -> HVACMode:
 
 
 def get_hvac_action_from_ext_action(action: DeviceAction) -> HVACAction:
+    """Convert device action to HVAC action."""
     if action == DeviceAction.COOLING:
         return HVACAction.COOLING
 
@@ -65,6 +70,7 @@ def get_hvac_action_from_ext_action(action: DeviceAction) -> HVACAction:
 
 
 def get_update_operation_mode_from_hvac_mode(mode: HVACMode) -> UpdateOperationMode:
+    """Convert HVAC mode to update operation mode."""
     if mode == HVACMode.HEAT:
         return UpdateOperationMode.HEAT
 
@@ -83,6 +89,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
     The entity, the library and the API will keep a consistent state between zones.
     """
 
+    _attr_has_entity_name = True
     zone_id: int
 
     def __init__(self, coordinator: AquareaDataUpdateCoordinator, zone_id) -> None:
@@ -92,7 +99,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
 
         self._zone_id = zone_id
         self._attr_temperature_unit = TEMP_CELSIUS
-        self._attr_name = f"{device.name} {device.zones.get(zone_id).name}"
+        self._attr_name = device.zones.get(zone_id).name
         self._attr_unique_id = f"{super()._attr_unique_id}_heatpump"
 
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
@@ -101,9 +108,6 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
 
         if device.support_cooling(zone_id):
             self._attr_hvac_modes.extend([HVACMode.COOL, HVACMode.HEAT_COOL])
-
-        self._attr_device_class = SensorDeviceClass.TEMPERATURE
-        self._attr_state_class = SensorStateClass.MEASUREMENT
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -119,6 +123,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         # This is a workaround to make the UI work
         # We need to study if other devices allow to set the temperature and detect that
         # programatelly to make this work for all devices.
+        # https://github.com/cjaliaga/aioaquarea/issues/7
         current_temperature = device.zones.get(self._zone_id).temperature
         self._attr_current_temperature = current_temperature
         self._attr_max_temp = current_temperature
