@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Any
 
 import aioaquarea
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
 from homeassistant.core import HomeAssistant
@@ -48,6 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN][entry.entry_id][CLIENT] = client
 
     try:
+        await client.login()
         # Get all the devices, we will filter the disabled ones later
         devices = await client.get_devices(include_long_id=True)
 

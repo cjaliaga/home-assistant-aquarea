@@ -1,10 +1,11 @@
 """Coordinator for Aquarea."""
 from __future__ import annotations
 
-import logging
 from datetime import timedelta
+import logging
 
 import aioaquarea
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import HomeAssistant
