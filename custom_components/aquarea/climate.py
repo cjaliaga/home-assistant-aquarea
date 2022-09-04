@@ -1,15 +1,16 @@
+"""Climate entity to control a zone for a Panasonic Aquarea Device"""
 import logging
 
 from aioaquarea import DeviceAction, ExtendedOperationMode, UpdateOperationMode
+
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
 )
-from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -31,17 +32,13 @@ async def async_setup_entry(
         config_entry.entry_id
     ][DEVICES]
 
-    entities: list[HeatPumpClimate] = []
-
-    entities.extend(
+    async_add_entities(
         [
             HeatPumpClimate(coordinator, zone_id)
             for coordinator in data.values()
             for zone_id in coordinator.device.zones
         ]
     )
-
-    async_add_entities(entities)
 
 
 def get_hvac_mode_from_ext_op_mode(mode: ExtendedOperationMode) -> HVACMode:
@@ -117,25 +114,62 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
 
         self._attr_hvac_mode = get_hvac_mode_from_ext_op_mode(device.mode)
         self._attr_hvac_action = get_hvac_action_from_ext_action(device.current_action)
+        self._attr_icon = (
+            "mdi:hvac-off" if device.mode == ExtendedOperationMode.OFF else "mdi:hvac"
+        )
 
-        # The device doesn't allow to set the temperature directly
+        zone = device.zones.get(self._zone_id)
+        self._attr_current_temperature = zone.temperature
+
+        # If the device doesn't allow to set the temperature directly
         # So we set the max and min to the current temperature.
-        # This is a workaround to make the UI work
-        # We need to study if other devices allow to set the temperature and detect that
-        # programatelly to make this work for all devices.
-        # https://github.com/cjaliaga/aioaquarea/issues/7
-        current_temperature = device.zones.get(self._zone_id).temperature
-        self._attr_current_temperature = current_temperature
-        self._attr_max_temp = current_temperature
-        self._attr_min_temp = current_temperature
+        # This is a workaround to make the UI work.
+        self._attr_max_temp = zone.temperature
+        self._attr_min_temp = zone.temperature
+
+        if zone.supports_set_temperature and device.mode != ExtendedOperationMode.OFF:
+            self._attr_max_temp = (
+                zone.cool_max
+                if device.mode
+                in (ExtendedOperationMode.COOL, ExtendedOperationMode.AUTO_COOL)
+                else zone.heat_max
+            )
+            self._attr_min_temp = (
+                zone.cool_min
+                if device.mode
+                in (ExtendedOperationMode.COOL, ExtendedOperationMode.AUTO_COOL)
+                else zone.heat_min
+            )
+            self._attr_target_temperature_step = 1
 
         super()._handle_coordinator_update()
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
+        if hvac_mode not in self.hvac_modes:
+            raise ValueError(f"Unsupported HVAC mode: {hvac_mode}")
+
+        _LOGGER.debug(
+            "Setting operation mode of %s to %s",
+            self.coordinator.device.device_id,
+            hvac_mode,
+        )
+
         await self.coordinator.device.set_mode(
             get_update_operation_mode_from_hvac_mode(hvac_mode), self._zone_id
         )
 
     async def async_set_temperature(self, **kwargs) -> None:
-        """The device doesn't allow to set the temperature directly."""
+        """Set new target temperature if supported by the zone"""
+        zone = self.coordinator.device.zones.get(self._zone_id)
+        temperature = kwargs.get(ATTR_TEMPERATURE, None)
+
+        if temperature and zone.supports_set_temperature:
+            _LOGGER.debug(
+                "Setting temperature of device:zone == %s:%s to %s",
+                self.coordinator.device.device_id,
+                zone.name,
+                str(temperature),
+            )
+
+            await self.coordinator.device.set_temperature(temperature, zone.zone_id)
