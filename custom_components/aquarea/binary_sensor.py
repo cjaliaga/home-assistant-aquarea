@@ -1,7 +1,10 @@
+"""Diagnostics sensor that indicates if the Panasonic Aquarea Device is on error"""
 import logging
 
-from homeassistant.components.binary_sensor import (BinarySensorDeviceClass,
-                                                    BinarySensorEntity)
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass,
+    BinarySensorEntity,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import EntityCategory
@@ -25,15 +28,13 @@ async def async_setup_entry(
         config_entry.entry_id
     ][DEVICES]
 
-    entities: list[StatusBinarySensor] = []
-
-    entities.extend([StatusBinarySensor(coordinator) for coordinator in data.values()])
-
-    async_add_entities(entities)
+    async_add_entities(
+        [StatusBinarySensor(coordinator) for coordinator in data.values()]
+    )
 
 
 class StatusBinarySensor(AquareaBaseEntity, BinarySensorEntity):
-    """Representation of a Aquarea sensor."""
+    """Representation of a Aquarea sensor that indicates if the device is on error"""
 
     _attr_has_entity_name = True
 
