@@ -5,7 +5,7 @@
   "documentation": "https://github.com/cjaliaga/home-assistant-aquarea",
   "issue_tracker": "https://github.com/cjaliaga/home-assistant-aquarea/issues",
   "requirements": [
-    "aioaquarea==0.2.0"
+    "aioaquarea==0.3.0"
   ],
   "ssdp": [],
   "zeroconf": [],
@@ -20,5 +20,5 @@
     "@cjaliaga"
   ],
   "iot_class": "cloud_polling",
-  "version": "0.1.0a1"
+  "version": "0.1.0"
 }
