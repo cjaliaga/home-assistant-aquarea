@@ -12,9 +12,9 @@ This integration is currently in beta. Please report any issues you find and any
 **⚠️ Make sure to read the 'Remarks' and 'Warning' sections**
 
 ## Features
-* Climate entity per device zone that allows you to control the operation mode and read the current temperature of the device/zone.
+* Climate entity per device zone that allows you to control the operation mode, read the current temperature of the water in the device/zone and (if the zone supports it), change the target temperature.
 * Sensor entity for the outdoor temperature.
-* Water heater entity for the hot water tank (if the device has one).
+* Water heater entity for the hot water tank (if the device has one), that allows you to control the operation mode (enabled/disabled) and read the current temperature of the water in the tank.
 * Diagnostic sensor to indicate if the device has any problem (such not enough water flow).
 
 ## Features in the works
@@ -22,8 +22,7 @@ This integration is currently in beta. Please report any issues you find and any
 * Weekly schedule.
 * Set the device in eco mode/quiet mode/holiday mode (if the device supports it).
 * Set the device in away mode (if the device supports it).
-* Investigate if it's possible to set target temperature for the zone on devices that support it.
-
+* Additional sensors/switches for the device.
 
 ## Remarks
 Panasonic only allows one connection per account at the same time. This means that if you open the session from the Panasonic Confort Cloud app or the Panasonic Confort Cloud website, the session will be closed and you will be disconnected from Home Assistant. The integration will try to reconnect automatically, clossing the session from the app or the website. If you want to use the app or the website, you will have to temporarily disable the integration.
