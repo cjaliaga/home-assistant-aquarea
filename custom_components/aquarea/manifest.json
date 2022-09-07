@@ -5,7 +5,7 @@
   "documentation": "https://github.com/cjaliaga/home-assistant-aquarea",
   "issue_tracker": "https://github.com/cjaliaga/home-assistant-aquarea/issues",
   "requirements": [
-    "aioaquarea==0.3.1"
+    "aioaquarea==0.3.2"
   ],
   "ssdp": [],
   "zeroconf": [],
