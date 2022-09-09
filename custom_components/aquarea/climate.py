@@ -122,7 +122,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         self._attr_current_temperature = zone.temperature
 
         # If the device doesn't allow to set the temperature directly
-        # So we set the max and min to the current temperature.
+        # We set the max and min to the current temperature.
         # This is a workaround to make the UI work.
         self._attr_max_temp = zone.temperature
         self._attr_min_temp = zone.temperature
@@ -139,6 +139,15 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
                 if device.mode
                 in (ExtendedOperationMode.COOL, ExtendedOperationMode.AUTO_COOL)
                 else zone.heat_min
+            )
+            self._attr_target_temperature = (
+                zone.cool_target_temperature
+                if device.mode
+                in (
+                    ExtendedOperationMode.COOL,
+                    ExtendedOperationMode.AUTO_COOL,
+                )
+                else zone.heat_target_temperature
             )
             self._attr_target_temperature_step = 1
 
