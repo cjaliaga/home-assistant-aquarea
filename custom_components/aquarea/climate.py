@@ -1,7 +1,12 @@
 """Climate entity to control a zone for a Panasonic Aquarea Device"""
 import logging
 
-from aioaquarea import DeviceAction, ExtendedOperationMode, UpdateOperationMode
+from aioaquarea import (
+    DeviceAction,
+    ExtendedOperationMode,
+    UpdateOperationMode,
+    OperationStatus,
+)
 
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import (
@@ -41,8 +46,13 @@ async def async_setup_entry(
     )
 
 
-def get_hvac_mode_from_ext_op_mode(mode: ExtendedOperationMode) -> HVACMode:
+def get_hvac_mode_from_ext_op_mode(
+    mode: ExtendedOperationMode, zone_status: OperationStatus
+) -> HVACMode:
     """Convert extended operation mode to HVAC mode."""
+    if zone_status == OperationStatus.OFF:
+        return HVACMode.OFF
+
     if mode == ExtendedOperationMode.HEAT:
         return HVACMode.HEAT
 
@@ -111,14 +121,16 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         """Handle updated data from the coordinator."""
 
         device = self.coordinator.device
+        zone = device.zones.get(self._zone_id)
 
-        self._attr_hvac_mode = get_hvac_mode_from_ext_op_mode(device.mode)
+        self._attr_hvac_mode = get_hvac_mode_from_ext_op_mode(
+            device.mode, zone.operation_status
+        )
         self._attr_hvac_action = get_hvac_action_from_ext_action(device.current_action)
         self._attr_icon = (
             "mdi:hvac-off" if device.mode == ExtendedOperationMode.OFF else "mdi:hvac"
         )
 
-        zone = device.zones.get(self._zone_id)
         self._attr_current_temperature = zone.temperature
 
         # If the device doesn't allow to set the temperature directly
