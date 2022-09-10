@@ -193,4 +193,6 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
                 str(temperature),
             )
 
-            await self.coordinator.device.set_temperature(temperature, zone.zone_id)
+            await self.coordinator.device.set_temperature(
+                int(temperature), zone.zone_id
+            )
