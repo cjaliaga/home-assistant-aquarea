@@ -1,6 +1,6 @@
 # Manage Panasonic Aquarea Smart Cloud devices from Home Assistant
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 ![GitHub Release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/cjaliaga/home-assistant-aquarea?include_prereleases)
 
 Panasonic Aquarea Smart Cloud is a cloud service that allows you to control your Panasonic Aquarea heat pump from your smartphone. This integration allows you to control your heat pump from Home Assistant.
@@ -31,27 +31,23 @@ Panasonic only allows one connection per account at the same time. This means th
 
 ### Using [HACS](https://hacs.xyz/) (recommended)
 
-- Copy this repo URL
+1. Download the integration via (one of them):
+   - [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=cjaliaga&repository=home-assistant-aquarea&category=integration)
+   - Go to HACS > Integrations > Look for "Aquarea" 
 
-- Go to HACS > Integrations > 3 dots > Custom repositories  
-  - On the "Repository" field put the URL copied before
-  - On the "Category" select "Integration"
-  - Click the "Download" button and download latest version.
-- Restart Home Assistant
-- Click this button >>
-[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=aquarea)
-- or Go to "Settings" >> "Devices & Services", click "+ ADD INTEGRATION" and select "Aquarea Smart Cloud"
-
-- Follow the configuration steps. You'll need to provide your Panasonic ID and your password. The integration will discover the devices associated to your Panasonic ID. 
+2. Restart Home Assistant
+3. Add integration via (one of them):
+   - [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=aquarea)
+   - Go to "Settings" >> "Devices & Services", click "+ ADD INTEGRATION" and select "Aquarea Smart Cloud"
+4. Follow the configuration steps. You'll need to provide your Panasonic ID and your password. The integration will discover the devices associated to your Panasonic ID. 
 
 ### Manual installation
-- Copy the folder named `aquarea` from the [latest release](https://github.com/cjaliaga/home-assistant-aquarea/releases/latest) to the `custom_components` folder in your config folder.
-- Restart HA
-- Click this button >>
-[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=aquarea)
-- or Go to "Settings" >> "Devices & Services", click "+ ADD INTEGRATION" and select "Aquarea Smart Cloud"
-
-- Follow the configuration steps. You'll need to provide your Panasonic ID and your password. The integration will discover the devices associated to your Panasonic ID.
+1. Copy the folder named `aquarea` from the [latest release](https://github.com/cjaliaga/home-assistant-aquarea/releases/latest) to the `custom_components` folder in your config folder.
+2. Restart Home Assistant
+3. Add integration via (one of them):
+   - [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=aquarea)
+   - Go to "Settings" >> "Devices & Services", click "+ ADD INTEGRATION" and select "Aquarea Smart Cloud"
+4. Follow the configuration steps. You'll need to provide your Panasonic ID and your password. The integration will discover the devices associated to your Panasonic ID.
 
 ## Warning
 This integration is currently in beta. It supports several devices but it has been tested with a single device. If you have multiple devices under the same Panasonic ID, please test it and report any issue you find.
@@ -59,8 +55,6 @@ This integration is currently in beta. It supports several devices but it has be
 The integration also supports devices with several zones, but it has not been tested with multiple zones. If you have a device with multiple zones, please test it and report any issue you find.
 
 The integration has been tested with a heat pump with a hot water tank, but it has not been tested with a heat pump without a hot water tank. If you have a heat pump without a hot water tank, please test it and report any issue you find.
-
-My device currently doesn't allow to set temperatures for the zone (it only allows to set the operation mode). If your device allows to set temperatures, please contact me so I can add support for it.
 
 ## Disclaimer
 
