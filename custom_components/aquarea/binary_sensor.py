@@ -42,7 +42,7 @@ class StatusBinarySensor(AquareaBaseEntity, BinarySensorEntity):
         super().__init__(coordinator)
 
         self._attr_name = "Status"
-        self._attr_unique_id = f"{super()._attr_unique_id}_status"
+        self._attr_unique_id = f"{super().unique_id}_status"
         self._attr_device_class = BinarySensorDeviceClass.PROBLEM
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
 

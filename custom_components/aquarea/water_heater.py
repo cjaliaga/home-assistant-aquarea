@@ -38,17 +38,13 @@ async def async_setup_entry(
         config_entry.entry_id
     ][DEVICES]
 
-    entities: list[WaterHeater] = []
-
-    entities.extend(
+    async_add_entities(
         [
             WaterHeater(coordinator)
             for coordinator in data.values()
             if coordinator.device.has_tank
         ]
     )
-
-    async_add_entities(entities)
 
 
 class WaterHeater(AquareaBaseEntity, WaterHeaterEntity):
@@ -60,7 +56,7 @@ class WaterHeater(AquareaBaseEntity, WaterHeaterEntity):
         super().__init__(coordinator)
 
         self._attr_name = "Tank"
-        self._attr_unique_id = f"{super()._attr_unique_id}"
+        self._attr_unique_id = f"{super().unique_id}_tank"
         self._attr_temperature_unit = TEMP_CELSIUS
         self._attr_supported_features = (
             WaterHeaterEntityFeature.TARGET_TEMPERATURE

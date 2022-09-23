@@ -107,7 +107,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         self._zone_id = zone_id
         self._attr_temperature_unit = TEMP_CELSIUS
         self._attr_name = device.zones.get(zone_id).name
-        self._attr_unique_id = f"{super()._attr_unique_id}_heatpump"
+        self._attr_unique_id = f"{super().unique_id}_climate_{zone_id}"
 
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
 
