@@ -24,6 +24,11 @@ This integration is currently in beta. Please report any issues you find and any
 * Set the device in away mode (if the device supports it).
 * Additional sensors/switches for the device.
 
+## ⚠️ Update to v0.2.0 from v0.1.X
+If you are updating from a version prior to v0.2.0, the recommendation is for you to remove the integration and add it again before updating. This is because v0.2.0 introduces a breaking change in the unique id generation for the entities. If you don't remove the integration and add it again, you will end up with duplicate entities.
+
+This is a one time thing during the beta that was needed in order to support multiple devices and zones. From now on, the unique id generation will be stable and you won't need to remove the integration and add it again.
+
 ## Remarks
 Panasonic only allows one connection per account at the same time. This means that if you open the session from the Panasonic Confort Cloud app or the Panasonic Confort Cloud website, the session will be closed and you will be disconnected from Home Assistant. The integration will try to reconnect automatically, clossing the session from the app or the website. If you want to use the app or the website, you will have to temporarily disable the integration.
 
