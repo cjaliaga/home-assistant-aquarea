@@ -27,13 +27,9 @@ async def async_setup_entry(
         config_entry.entry_id
     ][DEVICES]
 
-    entities: list[OutDoorTemperatureSensor] = []
-
-    entities.extend(
+    async_add_entities(
         [OutDoorTemperatureSensor(coordinator) for coordinator in data.values()]
     )
-
-    async_add_entities(entities)
 
 
 class OutDoorTemperatureSensor(AquareaBaseEntity, SensorEntity):
@@ -45,7 +41,7 @@ class OutDoorTemperatureSensor(AquareaBaseEntity, SensorEntity):
         super().__init__(coordinator)
 
         self._attr_name = "Outdoor Temperature"
-        self._attr_unique_id = f"{super()._attr_unique_id}_outdoor_temperature"
+        self._attr_unique_id = f"{super().unique_id}_outdoor_temperature"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_native_unit_of_measurement = "°C"
