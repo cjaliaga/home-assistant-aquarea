@@ -1,15 +1,17 @@
 """Climate entity to control a zone for a Panasonic Aquarea Device"""
+from __future__ import annotations
+
 import logging
 
 from aioaquarea import (
     DeviceAction,
     ExtendedOperationMode,
-    UpdateOperationMode,
     OperationStatus,
+    UpdateOperationMode,
 )
 
-from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
+from homeassistant.components.climate import (
+    ClimateEntity,
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
@@ -183,9 +185,9 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
     async def async_set_temperature(self, **kwargs) -> None:
         """Set new target temperature if supported by the zone"""
         zone = self.coordinator.device.zones.get(self._zone_id)
-        temperature = kwargs.get(ATTR_TEMPERATURE, None)
+        temperature: float | None = kwargs.get(ATTR_TEMPERATURE)
 
-        if temperature and zone.supports_set_temperature:
+        if temperature is not None and zone.supports_set_temperature:
             _LOGGER.debug(
                 "Setting temperature of device:zone == %s:%s to %s",
                 self.coordinator.device.device_id,

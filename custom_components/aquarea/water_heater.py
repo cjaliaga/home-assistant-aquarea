@@ -107,7 +107,8 @@ class WaterHeater(AquareaBaseEntity, WaterHeaterEntity):
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
-        if temperature := kwargs.get(ATTR_TEMPERATURE):
+        temperature: float | None = kwargs.get(ATTR_TEMPERATURE)
+        if temperature is not None:
             _LOGGER.debug(
                 "Setting %s water tank temperature to %s",
                 self.coordinator.device.device_id,
