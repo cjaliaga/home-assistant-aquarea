@@ -2,6 +2,9 @@ categories:
   - title: "⚠ Breaking Changes"
     labels:
       - "breaking-change"
+  - title: "Fixes"
+    labels:
+      - "bug"
   - title: "⬆️ Dependencies"
     collapse-after: 1
     labels:
