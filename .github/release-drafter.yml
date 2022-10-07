@@ -2,7 +2,7 @@ categories:
   - title: "⚠ Breaking Changes"
     labels:
       - "breaking-change"
-  - title: "Fixes"
+  - title: "🐛 Bug Fixes"
     labels:
       - "bug"
   - title: "⬆️ Dependencies"
