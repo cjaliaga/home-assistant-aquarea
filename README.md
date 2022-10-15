@@ -32,6 +32,9 @@ This is a one time thing during the beta that was needed in order to support mul
 ## Remarks
 Panasonic only allows one connection per account at the same time. This means that if you open the session from the Panasonic Confort Cloud app or the Panasonic Confort Cloud website, the session will be closed and you will be disconnected from Home Assistant. The integration will try to reconnect automatically, clossing the session from the app or the website. If you want to use the app or the website, you will have to temporarily disable the integration.
 
+### Minimun Home Assistant version required
+The minimum supported version of Home Assistant is **2022.8** due to this: [Waiting for config entry platforms | Home Assistant Developer Docs](https://developers.home-assistant.io/blog/2022/07/08/config_entry_forwards/)
+
 ## Installation
 
 ### Using [HACS](https://hacs.xyz/) (recommended)
