@@ -1,0 +1,27 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Het apparaat is al geconfigureerd"
+        },
+        "error": {
+            "cannot_connect": "Geen verbinding mogelijk",
+            "invalid_auth": "Ongeldige gebruikersnaam of wachtwoord",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "user": {
+                "description": "Voer uw Panasonic ID en wachtwoord in:",
+                "data": {
+                    "password": "Wachtwoord",
+                    "username": "Gebruikersnaam"
+                }
+            },
+            "reauth": {
+                "description": "Voer het wachtwoord voor uw Panasonic ID {username} in:",
+                "data": {
+                    "password": "Wachtwoord"
+                }
+            }
+        }
+    }
+}
