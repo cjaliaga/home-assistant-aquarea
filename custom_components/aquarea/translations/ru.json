@@ -1,0 +1,27 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Устройство уже настроено"
+        },
+        "error": {
+            "cannot_connect": "Не удалось подключиться",
+            "invalid_auth": "Неверное имя пользователя или пароль",
+            "unknown": "Непредвиденная ошибка"
+        },
+        "step": {
+            "user": {
+                "description": "Пожалуйста, введите свой идентификатор Panasonic и пароль:",
+                "data": {
+                    "password": "Пароль",
+                    "username": "Имя пользователя"
+                }
+            },
+            "reauth": {
+                "description": "Пожалуйста, введите пароль для вашего Panasonic ID {username}:",
+                "data": {
+                    "password": "Пароль"
+                }
+            }
+        }
+    }
+}
