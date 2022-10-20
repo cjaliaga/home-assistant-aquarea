@@ -1,0 +1,27 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zařízení je již nakonfigurováno"
+        },
+        "error": {
+            "cannot_connect": "Nepodařilo se připojit",
+            "invalid_auth": "Neplatné uživatelské jméno nebo heslo",
+            "unknown": "Neočekávaná chyba"
+        },
+        "step": {
+            "user": {
+                "description": "Zadejte své Panasonic ID a heslo:",
+                "data": {
+                    "password": "Heslo",
+                    "username": "Uživatelské jméno"
+                }
+            },
+            "reauth": {
+                "description": "Zadejte prosím heslo pro své Panasonic ID {username}:",
+                "data": {
+                    "password": "Heslo"
+                }
+            }
+        }
+    }
+}
