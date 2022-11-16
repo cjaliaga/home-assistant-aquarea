@@ -1,0 +1,27 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Urządzenie jest już skonfigurowane"
+        },
+        "error": {
+            "cannot_connect": "Nie udało się połączyć",
+            "invalid_auth": "Niprawidłowa nazwa użytkownika lub hasło",
+            "unknown": "Wystąpił nieznany błąd"
+        },
+        "step": {
+            "user": {
+                "description": "Wprowadź swój identyfikator Panasonic ID i hasło:",
+                "data": {
+                    "password": "Hasło",
+                    "username": "Nazwa użytkownika"
+                }
+            },
+            "reauth": {
+                "description": "Wprowadź hasło dla swojego identyfikatora Panasonic ID {username}:",
+                "data": {
+                    "password": "Hasło"
+                }
+            }
+        }
+    }
+}
