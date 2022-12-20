@@ -1,0 +1,27 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Įrenginys jau nustatytas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas prisijungimo vardas arba slaptažodis",
+            "unknown": "Nežinoma klaida"
+        },
+        "step": {
+            "user": {
+                "description": "Įveskite savo Panasonic ID ir slaptažodį:",
+                "data": {
+                    "password": "Slaptažodis",
+                    "username": "Prisijungimo vardas"
+                }
+            },
+            "reauth": {
+                "description": "Įveskite slatažodį Panasonic ID vartotojui {username}:",
+                "data": {
+                    "password": "Slaptažodis"
+                }
+            }
+        }
+    }
+}
