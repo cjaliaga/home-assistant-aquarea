@@ -17,7 +17,7 @@ from homeassistant.components.climate import (
     HVACMode,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, TEMP_CELSIUS
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -112,6 +112,8 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         self._attr_unique_id = f"{super().unique_id}_climate_{zone_id}"
 
         self._attr_supported_features = ClimateEntityFeature.TARGET_TEMPERATURE
+
+        self._attr_precision = PRECISION_WHOLE
 
         self._attr_hvac_modes = [HVACMode.HEAT, HVACMode.OFF]
 
