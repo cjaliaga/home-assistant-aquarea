@@ -15,6 +15,7 @@ from homeassistant.components.climate import (
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
+    ATTR_HVAC_MODE,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
@@ -186,6 +187,10 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         """Set new target temperature if supported by the zone"""
         zone = self.coordinator.device.zones.get(self._zone_id)
         temperature: float | None = kwargs.get(ATTR_TEMPERATURE)
+        hvac_mode: HVACMode | None = kwargs.get(ATTR_HVAC_MODE)
+
+        if hvac_mode is not None:
+            await self.async_set_hvac_mode(hvac_mode)
 
         if temperature is not None and zone.supports_set_temperature:
             _LOGGER.debug(
