@@ -187,7 +187,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         """Set new target temperature if supported by the zone"""
         zone = self.coordinator.device.zones.get(self._zone_id)
         temperature: float | None = kwargs.get(ATTR_TEMPERATURE)
-        hvac_mode = kwargs.get(ATTR_HVAC_MODE)
+        hvac_mode: HVACMode | None = kwargs.get(ATTR_HVAC_MODE)
 
         if hvac_mode is not None:
             await self.async_set_hvac_mode(hvac_mode)
