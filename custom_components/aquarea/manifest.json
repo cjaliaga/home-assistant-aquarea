@@ -16,7 +16,7 @@
     "aquarea"
   ],
   "requirements": [
-    "aioaquarea==0.3.7"
+    "aioaquarea==0.3.8"
   ],
   "ssdp": [],
   "version": "0.2.4",
