@@ -19,6 +19,6 @@
     "aioaquarea==0.3.8"
   ],
   "ssdp": [],
-  "version": "0.2.4",
+  "version": "0.3.0",
   "zeroconf": []
 }
