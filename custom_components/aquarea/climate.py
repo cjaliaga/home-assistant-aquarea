@@ -19,7 +19,7 @@ from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS, PRECISION_WHOLE
+from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -127,7 +127,7 @@ def get_preset_from_quiet_mode(quiet_mode: QuietMode) -> str:
 def get_presets() -> list[str]:
     """Return the list of available preset modes."""
     return [
-        "",
+        "Quiet Mode Off",
         "Quiet Mode Level 1",
         "Quiet Mode Level 2",
         "Quiet Mode Level 3",
@@ -149,7 +149,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         device = coordinator.device
 
         self._zone_id = zone_id
-        self._attr_temperature_unit = TEMP_CELSIUS
+        self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_name = device.zones.get(zone_id).name
         self._attr_unique_id = f"{super().unique_id}_climate_{zone_id}"
 
