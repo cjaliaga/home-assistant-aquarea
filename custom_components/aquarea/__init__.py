@@ -39,19 +39,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Aquarea Smart Cloud from a config entry."""
 
     initialize_data(hass, entry)
-
-    client = hass.data[DOMAIN].get(entry.entry_id).get(CLIENT)
-    if not client:
-        username = entry.data.get(CONF_USERNAME)
-        password = entry.data.get(CONF_PASSWORD)
-        session = async_create_clientsession(hass)
-        client = aioaquarea.Client(session, username, password)
-        hass.data[DOMAIN][entry.entry_id][CLIENT] = client
+    client = get_configured_client(hass, entry)
 
     try:
-        await client.login()
-        # Get all the devices, we will filter the disabled ones later
-        devices = await client.get_devices(include_long_id=True)
+        devices = await try_get_devices(hass, entry)
 
         # We create a Coordinator per Device and store it in the hass.data[DOMAIN] dict to be able to access it from the platform
         for device in devices:
@@ -70,6 +61,44 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             raise ConfigEntryAuthFailed from err
 
     return True
+
+
+def get_configured_client(
+    hass: HomeAssistant, entry: ConfigEntry, override_existing_client: bool = False
+) -> aioaquarea.Client:
+    client = hass.data[DOMAIN].get(entry.entry_id).get(CLIENT)
+
+    if not client or override_existing_client:
+        username = entry.data.get(CONF_USERNAME)
+        password = entry.data.get(CONF_PASSWORD)
+        session = async_create_clientsession(hass)
+        client = aioaquarea.Client(session, username, password)
+        hass.data[DOMAIN][entry.entry_id][CLIENT] = client
+
+    return client
+
+
+async def try_get_devices(
+    hass: HomeAssistant, entry: ConfigEntry
+) -> list[aioaquarea.DeviceInfo]:
+    client = get_configured_client(hass, entry)
+
+    async def get_devices():
+        await client.login()
+        # Get all the devices, we will filter the disabled ones later
+        devices = await client.get_devices(include_long_id=True)
+        return devices
+
+    try:
+        devices = await get_devices()
+    except RuntimeError as err:
+        if str(err) == "Session is closed":
+            client = get_configured_client(hass, entry, True)
+            devices = await get_devices()
+        else:
+            raise err
+
+    return devices
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
