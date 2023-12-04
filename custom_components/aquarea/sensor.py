@@ -1,13 +1,25 @@
+"""Adds Aquareea sensors."""
+from collections.abc import Callable
+from dataclasses import dataclass
+from datetime import datetime, timedelta
 import logging
+from typing import Any, Self
+
+from aioaquarea import ConsumptionType, DataNotAvailableError
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
+    SensorEntityDescription,
+    SensorExtraStoredData,
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import UnitOfEnergy
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.util import dt as dt_util
 
 from . import AquareaBaseEntity
 from .const import DEVICES, DOMAIN
@@ -15,6 +27,47 @@ from .coordinator import AquareaDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
+@dataclass(kw_only=True)
+class AquareaEnergyConsumptionSensorDescription(SensorEntityDescription):
+    consumption_type: ConsumptionType
+    available: Callable[[AquareaDataUpdateCoordinator],bool] = lambda coordinator: True
+
+ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
+    AquareaEnergyConsumptionSensorDescription(
+        key="heating_accumulated_energy_consumption",
+        name="Heating Accumulated Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.HEAT,
+    ),
+    AquareaEnergyConsumptionSensorDescription(
+        key="tank_accumulated_energy_consumption",
+        name= "Tank Accumulated Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.WATER_TANK,
+        available=lambda coordinator: coordinator.device.has_tank
+    ),
+    AquareaEnergyConsumptionSensorDescription(
+        key="cooling_accumulated_energy_consumption",
+        name= "Cooling Accumulated Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.COOL,
+        available=lambda coordinator: coordinator.device.support_cooling()
+    ),
+    AquareaEnergyConsumptionSensorDescription(
+        key="accumulated_energy_consumption",
+        name= "Accumulated Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.TOTAL
+    ),
+]
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -27,9 +80,81 @@ async def async_setup_entry(
         config_entry.entry_id
     ][DEVICES]
 
-    async_add_entities(
-        [OutDoorTemperatureSensor(coordinator) for coordinator in data.values()]
+    entities: list[SensorEntity] = []
+
+    for coordinator in data.values():
+        entities.append(OutDoorTemperatureSensor(coordinator))
+        entities.extend(
+            [
+                EnergyAccumulatedConsumptionSensor(description,coordinator)
+                for description in ACCUMULATED_ENERGY_SENSORS
+                if description.available(coordinator)
+            ]
+        )
+
+    entities.extend(
+        [HeatEnergyConsumptionSensor(coordinator) for coordinator in data.values()]
     )
+
+    async_add_entities(entities)
+
+
+@dataclass
+class AquareaSensorExtraStoredData(SensorExtraStoredData):
+    """Class to hold Aquarea sensor specific state data."""
+
+    period_being_processed: datetime | None = None
+
+    @classmethod
+    def from_dict(cls, restored: dict[str, Any]) -> Self:
+        """Return AquareaSensorExtraStoredData from dict."""
+        sensor_data = super().from_dict(restored)
+        return cls(
+            native_value=sensor_data.native_value,
+            native_unit_of_measurement=sensor_data.native_unit_of_measurement,
+            period_being_processed=dt_util.parse_datetime(
+                restored.get("period_being_processed","")
+            ),
+        )
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return AquareaSensorExtraStoredData as dict."""
+        data = super().as_dict()
+
+        if self.period_being_processed is not None:
+            data["period_being_processed"] = dt_util.as_local(
+                self.period_being_processed
+            ).isoformat()
+
+        return data
+
+
+@dataclass
+class AquareaAccumulatedSensorExtraStoredData(AquareaSensorExtraStoredData):
+    """Class to hold Aquarea sensor specific state data."""
+
+    accumulated_period_being_processed: float | None = None
+
+    @classmethod
+    def from_dict(cls, restored: dict[str, Any]) -> Self:
+        """Return AquareaSensorExtraStoredData from dict."""
+        sensor_data = super().from_dict(restored)
+        return cls(
+            native_value=sensor_data.native_value,
+            native_unit_of_measurement=sensor_data.native_unit_of_measurement,
+            period_being_processed=sensor_data.period_being_processed,
+            accumulated_period_being_processed=restored[
+                "accumulated_period_being_processed"
+            ],
+        )
+
+    def as_dict(self) -> dict[str, Any]:
+        """Return AquareaAccumulatedSensorExtraStoredData as dict."""
+        data = super().as_dict()
+        data[
+            "accumulated_period_being_processed"
+        ] = self.accumulated_period_being_processed
+        return data
 
 
 class OutDoorTemperatureSensor(AquareaBaseEntity, SensorEntity):
@@ -57,3 +182,248 @@ class OutDoorTemperatureSensor(AquareaBaseEntity, SensorEntity):
 
         self._attr_native_value = self.coordinator.device.temperature_outdoor
         super()._handle_coordinator_update()
+
+class EnergyAccumulatedConsumptionSensor(
+    AquareaBaseEntity, SensorEntity, RestoreEntity
+):
+    """Representation of a Aquarea sensor."""
+
+    _attr_has_entity_name = True
+    entity_description: AquareaEnergyConsumptionSensorDescription
+
+    def __init__(self, description: AquareaEnergyConsumptionSensorDescription, coordinator: AquareaDataUpdateCoordinator) -> None:
+        """Initialize an accumulated energy consumption sensor."""
+        super().__init__(coordinator)
+
+        self._attr_unique_id = (
+            f"{super().unique_id}_{description.key}"
+        )
+        self._attr_name = description.name
+        self._period_being_processed: datetime | None = None
+        self._accumulated_period_being_processed: float | None = None
+        self.entity_description = description
+
+    async def async_added_to_hass(self) -> None:
+        """Call when entity about to be added to hass."""
+        if (sensor_data := await self.async_get_last_sensor_data()) is not None:
+            self._attr_native_value = sensor_data.native_value
+            self._period_being_processed = sensor_data.period_being_processed
+            self._accumulated_period_being_processed = (
+                sensor_data.accumulated_period_being_processed
+            )
+
+        if self._attr_native_value is None:
+            self._attr_native_value = 0
+
+        if self._accumulated_period_being_processed is None:
+            self._accumulated_period_being_processed = 0
+
+        await super().async_added_to_hass()
+
+    @property
+    def extra_restore_state_data(self) -> AquareaAccumulatedSensorExtraStoredData:
+        """Return sensor specific state data to be restored."""
+        return AquareaAccumulatedSensorExtraStoredData(
+            self.native_value,
+            self.native_unit_of_measurement,
+            self.period_being_processed,
+        )
+
+    async def async_get_last_sensor_data(
+        self,
+    ) -> AquareaAccumulatedSensorExtraStoredData | None:
+        """Restore native_value and native_unit_of_measurement."""
+        if (restored_last_extra_data := await self.async_get_last_extra_data()) is None:
+            return None
+        return AquareaAccumulatedSensorExtraStoredData.from_dict(
+            restored_last_extra_data.as_dict()
+        )
+
+    @property
+    def period_being_processed(self) -> datetime | None:
+        """Return the period being processed."""
+        return self._period_being_processed
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _LOGGER.debug(
+            "Updating sensor '%s' of %s",
+            self.unique_id,
+            self.coordinator.device.name,
+        )
+
+        # we need to check the value for the current hour. If the device returns None means that we don't have yet data for the current hour. However the device might still update the previous hour data.
+        device = self.coordinator.device
+        now = dt_util.now().replace(minute=0, second=0, microsecond=0)
+        previous_hour = now - timedelta(hours=1)
+
+        try:
+            current_hour_consumption = device.get_or_schedule_consumption(
+                now, self.entity_description.consumption_type
+            )
+
+            previous_hour_consumption = device.get_or_schedule_consumption(
+                previous_hour, self.entity_description.consumption_type
+            )
+
+        except DataNotAvailableError:
+            # we don't have yet data for the current hour but should be available on next refresh
+            return
+
+        # Stale data
+        if self._period_being_processed not in [now, previous_hour]:
+            self._period_being_processed = now
+            self._accumulated_period_being_processed = 0
+
+        # 1. When we already have data for the current hour and we were still updating the previous one. This means that the previous hour data is now complete and we can update the sensor value
+        if (
+            current_hour_consumption is not None
+            and previous_hour_consumption is not None
+            and self._period_being_processed == previous_hour
+        ):
+            to_add = abs(previous_hour_consumption - self._accumulated_period_being_processed)
+            self._attr_native_value += to_add
+            # Store the previous period as completed and move to next one
+            self._period_being_processed = now
+            self._accumulated_period_being_processed = 0
+            super()._handle_coordinator_update()
+            return
+
+        # 2. We're still processing the previous hour data and we don't have yet the current hour data. This means that we need to update the sensor value with the previous hour data
+        if (
+            current_hour_consumption is None
+            and previous_hour_consumption is not None
+            and self._period_being_processed == previous_hour
+        ):
+            to_add = abs(previous_hour_consumption - self._accumulated_period_being_processed)
+            self._attr_native_value += to_add
+            self._accumulated_period_being_processed = previous_hour_consumption
+            super()._handle_coordinator_update()
+            return
+
+        # 3. We're processing the current hour
+        if current_hour_consumption is not None:
+            self._period_being_processed = now
+            to_add = abs(current_hour_consumption - self._accumulated_period_being_processed)
+            self._attr_native_value += to_add
+            self._accumulated_period_being_processed = current_hour_consumption
+            super()._handle_coordinator_update()
+            return
+
+class HeatEnergyConsumptionSensor(AquareaBaseEntity, SensorEntity, RestoreEntity):
+    """Representation of a Aquarea sensor."""
+
+    _attr_has_entity_name = True
+
+    def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
+        super().__init__(coordinator)
+
+        self._attr_name = "Heat Energy Consumption"
+        self._attr_unique_id = f"{super().unique_id}_heating_energy_consumption"
+        self._attr_device_class = SensorDeviceClass.ENERGY
+        self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+        self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+        self._period_being_processed: datetime | None = None
+
+    async def async_added_to_hass(self) -> None:
+        """Call when entity about to be added to hass."""
+        if (sensor_data := await self.async_get_last_sensor_data()) is not None:
+            self._attr_native_value = sensor_data.native_value
+            self._period_being_processed = sensor_data.period_being_processed
+
+        if self._attr_native_value is None:
+            self._attr_native_value = 0
+
+        await super().async_added_to_hass()
+
+    @property
+    def extra_restore_state_data(self) -> AquareaSensorExtraStoredData:
+        """Return sensor specific state data to be restored."""
+        return AquareaSensorExtraStoredData(
+            self.native_value,
+            self.native_unit_of_measurement,
+            self.period_being_processed,
+        )
+
+    async def async_get_last_sensor_data(self) -> AquareaSensorExtraStoredData | None:
+        """Restore native_value and native_unit_of_measurement."""
+        if (restored_last_extra_data := await self.async_get_last_extra_data()) is None:
+            return None
+        return AquareaSensorExtraStoredData.from_dict(
+            restored_last_extra_data.as_dict()
+        )
+
+    @property
+    def period_being_processed(self) -> datetime | None:
+        """Return the period being processed."""
+        return self._period_being_processed
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _LOGGER.debug(
+            "Updating sensor '%s' of %s",
+            "heat_energy_consumption",
+            self.coordinator.device.name,
+        )
+
+        # we need to check the value for the current hour. If the device returns None means that we don't have yet data for the current hour. However the device might still update the previous hour data.
+        device = self.coordinator.device
+        now = dt_util.now().replace(minute=0, second=0, microsecond=0)
+        previous_hour = now - timedelta(hours=1)
+
+        try:
+            current_hour_consumption = device.get_or_schedule_consumption(
+                now, ConsumptionType.HEAT
+            )
+
+            previous_hour_consumption = device.get_or_schedule_consumption(
+                previous_hour, ConsumptionType.HEAT
+            )
+
+        except DataNotAvailableError:
+            # we don't have yet data for the current hour but should be available on next refresh
+            return
+
+        # Stale data, we reset to 0 to start a new cycle
+        if self._period_being_processed not in [now, previous_hour]:
+            self._period_being_processed = now
+            self._attr_native_value = 0
+            super()._handle_coordinator_update()
+            return
+
+        # 1. When we already have data for the current hour and we were still updating the previous one. This means that the previous hour data is now complete and we can update the sensor value
+        if (
+            current_hour_consumption is not None
+            and previous_hour_consumption is not None
+            and self._period_being_processed == previous_hour
+        ):
+            self._attr_native_value = previous_hour_consumption
+            self._period_being_processed = now
+            # Store the previous period as completed
+            super()._handle_coordinator_update()
+            # Reset the value to 0 to start the new period
+            self._attr_native_value = 0
+            super()._handle_coordinator_update()
+            # Update the value with the current hour data
+            self._attr_native_value = current_hour_consumption
+            super()._handle_coordinator_update()
+            return
+
+        # 2. We're still processing the previous hour data and we don't have yet the current hour data. This means that we need to update the sensor value with the previous hour data
+        if (
+            current_hour_consumption is None
+            and previous_hour_consumption is not None
+            and self._period_being_processed == previous_hour
+        ):
+            self._attr_native_value = previous_hour_consumption
+            super()._handle_coordinator_update()
+            return
+
+        # 3. We're processing the current hour
+        if current_hour_consumption is not None:
+            self._period_being_processed = now
+            self._attr_native_value = current_hour_consumption
+            super()._handle_coordinator_update()
+            return
