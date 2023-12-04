@@ -1,4 +1,4 @@
-"""Adds Aquareea sensors."""
+"""Adds Aquarea sensors."""
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -69,6 +69,47 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
     ),
 ]
 
+ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
+    AquareaEnergyConsumptionSensorDescription(
+        key="heating_energy_consumption",
+        name="Heating Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.HEAT,
+        entity_registry_enabled_default=False
+    ),
+    AquareaEnergyConsumptionSensorDescription(
+        key="tank_energy_consumption",
+        name= "Tank Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.WATER_TANK,
+        available=lambda coordinator: coordinator.device.has_tank,
+        entity_registry_enabled_default=False
+    ),
+    AquareaEnergyConsumptionSensorDescription(
+        key="cooling_energy_consumption",
+        name= "Cooling Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.COOL,
+        available=lambda coordinator: coordinator.device.support_cooling(),
+        entity_registry_enabled_default=False
+    ),
+    AquareaEnergyConsumptionSensorDescription(
+        key="energy_consumption",
+        name= "Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.TOTAL,
+        entity_registry_enabled_default=False
+    ),
+]
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -91,10 +132,13 @@ async def async_setup_entry(
                 if description.available(coordinator)
             ]
         )
-
-    entities.extend(
-        [HeatEnergyConsumptionSensor(coordinator) for coordinator in data.values()]
-    )
+        entities.extend(
+            [
+                EnergyConsumptionSensor(description,coordinator)
+                for description in ENERGY_SENSORS
+                if description.available(coordinator)
+            ]
+        )
 
     async_add_entities(entities)
 
@@ -311,20 +355,22 @@ class EnergyAccumulatedConsumptionSensor(
             super()._handle_coordinator_update()
             return
 
-class HeatEnergyConsumptionSensor(AquareaBaseEntity, SensorEntity, RestoreEntity):
+class EnergyConsumptionSensor(AquareaBaseEntity, SensorEntity, RestoreEntity):
     """Representation of a Aquarea sensor."""
 
     _attr_has_entity_name = True
+    entity_description: AquareaEnergyConsumptionSensorDescription
 
-    def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
+    def __init__(self, description: AquareaEnergyConsumptionSensorDescription, coordinator: AquareaDataUpdateCoordinator) -> None:
+        """Initialize an accumulated energy consumption sensor."""
         super().__init__(coordinator)
 
-        self._attr_name = "Heat Energy Consumption"
-        self._attr_unique_id = f"{super().unique_id}_heating_energy_consumption"
-        self._attr_device_class = SensorDeviceClass.ENERGY
-        self._attr_state_class = SensorStateClass.TOTAL_INCREASING
-        self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+        self._attr_unique_id = (
+            f"{super().unique_id}_{description.key}"
+        )
+        self._attr_name = description.name
         self._period_being_processed: datetime | None = None
+        self.entity_description = description
 
     async def async_added_to_hass(self) -> None:
         """Call when entity about to be added to hass."""
@@ -364,7 +410,7 @@ class HeatEnergyConsumptionSensor(AquareaBaseEntity, SensorEntity, RestoreEntity
         """Handle updated data from the coordinator."""
         _LOGGER.debug(
             "Updating sensor '%s' of %s",
-            "heat_energy_consumption",
+            self.unique_id,
             self.coordinator.device.name,
         )
 
@@ -375,11 +421,11 @@ class HeatEnergyConsumptionSensor(AquareaBaseEntity, SensorEntity, RestoreEntity
 
         try:
             current_hour_consumption = device.get_or_schedule_consumption(
-                now, ConsumptionType.HEAT
+                now, self.entity_description.consumption_type
             )
 
             previous_hour_consumption = device.get_or_schedule_consumption(
-                previous_hour, ConsumptionType.HEAT
+                previous_hour, self.entity_description.consumption_type
             )
 
         except DataNotAvailableError:
