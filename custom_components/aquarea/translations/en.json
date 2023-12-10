@@ -23,5 +23,36 @@
                 }
             }
         }
+    },
+    "entity": {
+      "sensor": {
+        "heating_accumulated_energy_consumption": {
+          "name": "Heating accumulated consumption"
+        },
+        "cooling_accumulated_energy_consumption": {
+          "name": "Cooling accumulated consumption"
+        },
+        "tank_accumulated_energy_consumption": {
+          "name": "Tank accumulated consumption"
+        },
+        "accumulated_energy_consumption": {
+          "name": "Accumulated consumption"
+        },
+        "heating_energy_consumption": {
+          "name": "Heating consumption"
+        },
+        "cooling_energy_consumption": {
+          "name": "Cooling consumption"
+        },
+        "tank_energy_consumption": {
+          "name": "Tank consumption"
+        },
+        "energy_consumption": {
+          "name": "Consumption"
+        },
+        "outdoor_temperature": {
+          "name": "Outdoor temperature"
+        }
+      }
     }
 }
