@@ -52,7 +52,7 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         consumption_type=ConsumptionType.COOL,
-        exists_fn=lambda coordinator: coordinator.device.support_cooling()
+        exists_fn=lambda coordinator: any(zone.cool_mode for zone in coordinator.device.zones.values())
     ),
     AquareaEnergyConsumptionSensorDescription(
         key="tank_accumulated_energy_consumption",
@@ -105,7 +105,7 @@ ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         consumption_type=ConsumptionType.COOL,
-        exists_fn=lambda coordinator: coordinator.device.support_cooling(),
+        exists_fn=lambda coordinator: any(zone.cool_mode for zone in coordinator.device.zones.values()),
         entity_registry_enabled_default=False
     ),
     AquareaEnergyConsumptionSensorDescription(
