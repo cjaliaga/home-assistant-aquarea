@@ -15,7 +15,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import UnitOfEnergy
+from homeassistant.const import UnitOfEnergy, UnitOfTemperature
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -29,12 +29,15 @@ _LOGGER = logging.getLogger(__name__)
 
 @dataclass(kw_only=True)
 class AquareaEnergyConsumptionSensorDescription(SensorEntityDescription):
+    """Entity Description for Aquarea Energy Consumption Sensors."""
+
     consumption_type: ConsumptionType
-    available: Callable[[AquareaDataUpdateCoordinator],bool] = lambda coordinator: True
+    exists_fn: Callable[[AquareaDataUpdateCoordinator],bool] = lambda _: True
 
 ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
     AquareaEnergyConsumptionSensorDescription(
         key="heating_accumulated_energy_consumption",
+        translation_key="heating_accumulated_energy_consumption",
         name="Heating Accumulated Consumption",
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -43,24 +46,27 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
     ),
     AquareaEnergyConsumptionSensorDescription(
         key="tank_accumulated_energy_consumption",
+        translation_key = "tank_accumulated_energy_consumption",
         name= "Tank Accumulated Consumption",
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         consumption_type=ConsumptionType.WATER_TANK,
-        available=lambda coordinator: coordinator.device.has_tank
+        exists_fn=lambda coordinator: coordinator.device.has_tank
     ),
     AquareaEnergyConsumptionSensorDescription(
         key="cooling_accumulated_energy_consumption",
+        translation_key="cooling_accumulated_energy_consumption",
         name= "Cooling Accumulated Consumption",
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         consumption_type=ConsumptionType.COOL,
-        available=lambda coordinator: coordinator.device.support_cooling()
+        exists_fn=lambda coordinator: coordinator.device.support_cooling()
     ),
     AquareaEnergyConsumptionSensorDescription(
         key="accumulated_energy_consumption",
+        translation_key="accumulated_energy_consumption",
         name= "Accumulated Consumption",
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -72,6 +78,7 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
 ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
     AquareaEnergyConsumptionSensorDescription(
         key="heating_energy_consumption",
+        translation_key="heating_energy_consumption",
         name="Heating Consumption",
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -81,26 +88,29 @@ ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
     ),
     AquareaEnergyConsumptionSensorDescription(
         key="tank_energy_consumption",
+        translation_key="tank_energy_consumption",
         name= "Tank Consumption",
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         consumption_type=ConsumptionType.WATER_TANK,
-        available=lambda coordinator: coordinator.device.has_tank,
+        exists_fn=lambda coordinator: coordinator.device.has_tank,
         entity_registry_enabled_default=False
     ),
     AquareaEnergyConsumptionSensorDescription(
         key="cooling_energy_consumption",
+        translation_key="cooling_energy_consumption",
         name= "Cooling Consumption",
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         consumption_type=ConsumptionType.COOL,
-        available=lambda coordinator: coordinator.device.support_cooling(),
+        exists_fn=lambda coordinator: coordinator.device.support_cooling(),
         entity_registry_enabled_default=False
     ),
     AquareaEnergyConsumptionSensorDescription(
         key="energy_consumption",
+        translation_key="energy_consumption",
         name= "Consumption",
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -129,14 +139,14 @@ async def async_setup_entry(
             [
                 EnergyAccumulatedConsumptionSensor(description,coordinator)
                 for description in ACCUMULATED_ENERGY_SENSORS
-                if description.available(coordinator)
+                if description.exists_fn(coordinator)
             ]
         )
         entities.extend(
             [
                 EnergyConsumptionSensor(description,coordinator)
                 for description in ENERGY_SENSORS
-                if description.available(coordinator)
+                if description.exists_fn(coordinator)
             ]
         )
 
@@ -204,16 +214,15 @@ class AquareaAccumulatedSensorExtraStoredData(AquareaSensorExtraStoredData):
 class OutDoorTemperatureSensor(AquareaBaseEntity, SensorEntity):
     """Representation of a Aquarea sensor."""
 
-    _attr_has_entity_name = True
-
     def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
         super().__init__(coordinator)
 
         self._attr_name = "Outdoor Temperature"
+        self._attr_translation_key = "outdoor_temperature"
         self._attr_unique_id = f"{super().unique_id}_outdoor_temperature"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
         self._attr_state_class = SensorStateClass.MEASUREMENT
-        self._attr_native_unit_of_measurement = "°C"
+        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     @callback
     def _handle_coordinator_update(self) -> None:
@@ -232,7 +241,6 @@ class EnergyAccumulatedConsumptionSensor(
 ):
     """Representation of a Aquarea sensor."""
 
-    _attr_has_entity_name = True
     entity_description: AquareaEnergyConsumptionSensorDescription
 
     def __init__(self, description: AquareaEnergyConsumptionSensorDescription, coordinator: AquareaDataUpdateCoordinator) -> None:
@@ -242,7 +250,6 @@ class EnergyAccumulatedConsumptionSensor(
         self._attr_unique_id = (
             f"{super().unique_id}_{description.key}"
         )
-        self._attr_name = description.name
         self._period_being_processed: datetime | None = None
         self._accumulated_period_being_processed: float | None = None
         self.entity_description = description
@@ -358,7 +365,6 @@ class EnergyAccumulatedConsumptionSensor(
 class EnergyConsumptionSensor(AquareaBaseEntity, SensorEntity, RestoreEntity):
     """Representation of a Aquarea sensor."""
 
-    _attr_has_entity_name = True
     entity_description: AquareaEnergyConsumptionSensorDescription
 
     def __init__(self, description: AquareaEnergyConsumptionSensorDescription, coordinator: AquareaDataUpdateCoordinator) -> None:
@@ -368,7 +374,6 @@ class EnergyConsumptionSensor(AquareaBaseEntity, SensorEntity, RestoreEntity):
         self._attr_unique_id = (
             f"{super().unique_id}_{description.key}"
         )
-        self._attr_name = description.name
         self._period_being_processed: datetime | None = None
         self.entity_description = description
 

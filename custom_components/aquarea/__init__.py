@@ -85,6 +85,7 @@ class AquareaBaseEntity(CoordinatorEntity[AquareaDataUpdateCoordinator]):
 
     coordinator: AquareaDataUpdateCoordinator
     _attr_attribution = ATTRIBUTION
+    _attr_has_entity_name = True
 
     def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
         """Initialize entity."""
@@ -95,7 +96,6 @@ class AquareaBaseEntity(CoordinatorEntity[AquareaDataUpdateCoordinator]):
             "id": self.coordinator.device.device_id,
         }
         self._attr_unique_id = self.coordinator.device.device_id
-        self._attr_name = self.coordinator.device.name
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.coordinator.device.device_id)},
             manufacturer=self.coordinator.device.manufacturer,
