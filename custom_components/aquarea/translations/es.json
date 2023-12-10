@@ -23,5 +23,36 @@
                 }
             }
         }
+    },
+    "entity": {
+      "sensor": {
+        "heating_accumulated_energy_consumption": {
+          "name": "Consumo acumulado calefacción"
+        },
+        "cooling_accumulated_energy_consumption": {
+          "name": "Consumo acumulado refrigeración"
+        },
+        "tank_accumulated_energy_consumption": {
+          "name": "Consumo acumulado calentador de agua"
+        },
+        "accumulated_energy_consumption": {
+          "name": "Consumo acumulado"
+        },
+        "heating_energy_consumption": {
+          "name": "Consumo calefacción"
+        },
+        "cooling_energy_consumption": {
+          "name": "Consumo refrigeración"
+        },
+        "tank_energy_consumption": {
+          "name": "Consumo acumulado calentador de agua"
+        },
+        "energy_consumption": {
+          "name": "Consumo"
+        },
+        "outdoor_temperature": {
+          "name": "Temperatura exterior"
+        }
+      }
     }
 }

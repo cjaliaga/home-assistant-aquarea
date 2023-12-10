@@ -45,16 +45,6 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         consumption_type=ConsumptionType.HEAT,
     ),
     AquareaEnergyConsumptionSensorDescription(
-        key="tank_accumulated_energy_consumption",
-        translation_key = "tank_accumulated_energy_consumption",
-        name= "Tank Accumulated Consumption",
-        device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.TOTAL_INCREASING,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        consumption_type=ConsumptionType.WATER_TANK,
-        exists_fn=lambda coordinator: coordinator.device.has_tank
-    ),
-    AquareaEnergyConsumptionSensorDescription(
         key="cooling_accumulated_energy_consumption",
         translation_key="cooling_accumulated_energy_consumption",
         name= "Cooling Accumulated Consumption",
@@ -63,6 +53,16 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         consumption_type=ConsumptionType.COOL,
         exists_fn=lambda coordinator: coordinator.device.support_cooling()
+    ),
+    AquareaEnergyConsumptionSensorDescription(
+        key="tank_accumulated_energy_consumption",
+        translation_key = "tank_accumulated_energy_consumption",
+        name= "Tank Accumulated Consumption",
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        consumption_type=ConsumptionType.WATER_TANK,
+        exists_fn=lambda coordinator: coordinator.device.has_tank
     ),
     AquareaEnergyConsumptionSensorDescription(
         key="accumulated_energy_consumption",
@@ -217,7 +217,6 @@ class OutDoorTemperatureSensor(AquareaBaseEntity, SensorEntity):
     def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
         super().__init__(coordinator)
 
-        self._attr_name = "Outdoor Temperature"
         self._attr_translation_key = "outdoor_temperature"
         self._attr_unique_id = f"{super().unique_id}_outdoor_temperature"
         self._attr_device_class = SensorDeviceClass.TEMPERATURE
