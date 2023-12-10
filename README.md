@@ -16,11 +16,12 @@ This integration is currently in beta. Please report any issues you find and any
 * Sensor entity for the outdoor temperature.
 * Water heater entity for the hot water tank (if the device has one), that allows you to control the operation mode (enabled/disabled) and read the current temperature of the water in the tank.
 * Diagnostic sensor to indicate if the device has any problem (such not enough water flow).
+* Energy consumption sensors (accumulated and sensors that reset the cycle every hour)
+* Quiet mode presets in the climate entity
 
 ## Features in the works
-* Consumption sensors.
 * Weekly schedule.
-* Set the device in eco mode/quiet mode/holiday mode (if the device supports it).
+* Set the device in eco mode/holiday mode (if the device supports it).
 * Set the device in away mode (if the device supports it).
 * Additional sensors/switches for the device.
 
