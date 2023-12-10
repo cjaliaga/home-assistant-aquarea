@@ -134,7 +134,7 @@ async def async_setup_entry(
     entities: list[SensorEntity] = []
 
     for coordinator in data.values():
-        entities.append(OutDoorTemperatureSensor(coordinator))
+        entities.append(OutdoorTemperatureSensor(coordinator))
         entities.extend(
             [
                 EnergyAccumulatedConsumptionSensor(description,coordinator)
@@ -211,10 +211,11 @@ class AquareaAccumulatedSensorExtraStoredData(AquareaSensorExtraStoredData):
         return data
 
 
-class OutDoorTemperatureSensor(AquareaBaseEntity, SensorEntity):
+class OutdoorTemperatureSensor(AquareaBaseEntity, SensorEntity):
     """Representation of a Aquarea sensor."""
 
     def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
+        """Initialize outdoor temperature sensor."""
         super().__init__(coordinator)
 
         self._attr_translation_key = "outdoor_temperature"
