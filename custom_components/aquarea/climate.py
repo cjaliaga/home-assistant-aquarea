@@ -1,4 +1,4 @@
-"""Climate entity to control a zone for a Panasonic Aquarea Device"""
+"""Climate entity to control a zone for a Panasonic Aquarea Device."""
 from __future__ import annotations
 
 import logging
@@ -7,16 +7,16 @@ from aioaquarea import (
     DeviceAction,
     ExtendedOperationMode,
     OperationStatus,
-    UpdateOperationMode,
     QuietMode,
+    UpdateOperationMode,
 )
 
 from homeassistant.components.climate import (
+    ATTR_HVAC_MODE,
     ClimateEntity,
     ClimateEntityFeature,
     HVACAction,
     HVACMode,
-    ATTR_HVAC_MODE,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, PRECISION_WHOLE, UnitOfTemperature
