@@ -23,5 +23,36 @@
                 }
             }
         }
+    },
+    "entity": {
+      "sensor": {
+        "heating_accumulated_energy_consumption": {
+          "name": "Sukauptas šildymo suvartojimas"
+        },
+        "cooling_accumulated_energy_consumption": {
+          "name": "Sukauptas šaldymo suvartojimas"
+        },
+        "tank_accumulated_energy_consumption": {
+          "name": "Sukauptas vandens šildymo suvartojimas"
+        },
+        "accumulated_energy_consumption": {
+          "name": "Sukauptas suvartojimas"
+        },
+        "heating_energy_consumption": {
+          "name": "Šildymo suvartojimas"
+        },
+        "cooling_energy_consumption": {
+          "name": "Šaldymo suvartojimas"
+        },
+        "tank_energy_consumption": {
+          "name": "Vandens šildymo suvartojimas"
+        },
+        "energy_consumption": {
+          "name": "Suvartojimas"
+        },
+        "outdoor_temperature": {
+          "name": "Lauko temperatūra"
+        }
+      }
     }
 }
