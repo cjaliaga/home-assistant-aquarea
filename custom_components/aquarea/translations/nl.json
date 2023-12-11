@@ -25,33 +25,34 @@
         }
     },
     "entity": {
-      "sensor": {
-        "heating_accumulated_energy_consumption": {
-          "name": "Gecumuleerd verbruik verwarming"
-        },
-        "cooling_accumulated_energy_consumption": {
-          "name": "Gecumuleerd verbruik koeling"
-        },
-        "tank_accumulated_energy_consumption": {
-          "name": "Gecumuleerd verbruik tank"
-        },
-        "accumulated_energy_consumption": {
-          "name": "Gecumuleerd verbruik"
-        },
-        "heating_energy_consumption": {
-          "name": "Verwarmingsverbruik"
-        },
-        "cooling_energy_consumption": {
-          "name": "Koelingsverbruik"
-        },
-        "tank_energy_consumption": {
-          "name": "Verbruik tank"
-        },
-        "energy_consumption": {
-          "name": "Verbruik"
-        },
-        "outdoor_temperature": {
-          "name": "Buitentemperatuur"
+        "sensor": {
+            "heating_accumulated_energy_consumption": {
+                "name": "Gecumuleerd verbruik verwarming"
+            },
+            "cooling_accumulated_energy_consumption": {
+                "name": "Gecumuleerd verbruik koeling"
+            },
+            "tank_accumulated_energy_consumption": {
+                "name": "Gecumuleerd verbruik tank"
+            },
+            "accumulated_energy_consumption": {
+                "name": "Gecumuleerd verbruik"
+            },
+            "heating_energy_consumption": {
+                "name": "Verwarmingsverbruik"
+            },
+            "cooling_energy_consumption": {
+                "name": "Koelingsverbruik"
+            },
+            "tank_energy_consumption": {
+                "name": "Verbruik tank"
+            },
+            "energy_consumption": {
+                "name": "Verbruik"
+            },
+            "outdoor_temperature": {
+                "name": "Buitentemperatuur"
+            }
         }
-      }
+    }
 }
