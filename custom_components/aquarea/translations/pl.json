@@ -23,5 +23,36 @@
                 }
             }
         }
+    },
+    "entity": {
+        "sensor": {
+            "heating_accumulated_energy_consumption": {
+                "name": "Ogrzewanie - skumulowane zużycie energii"
+            },
+            "cooling_accumulated_energy_consumption": {
+                "name": "Chłodzenie - skumulowane zużycie energii"
+            },
+            "tank_accumulated_energy_consumption": {
+                "name": "Podgrzewanie zbiornika wody - skumulowane zużycie energii"
+            },
+            "accumulated_energy_consumption": {
+                "name": "Skumulowane zużycie energii"
+            },
+            "heating_energy_consumption": {
+                "name": "Ogrzewanie - zużycie energii"
+            },
+            "cooling_energy_consumption": {
+                "name": "Chłodzenie - zużycie energii"
+            },
+            "tank_energy_consumption": {
+                "name": "Podgrzewanie zbiornika wody - zużycie energii"
+            },
+            "energy_consumption": {
+                "name": "Zużycie energii"
+            },
+            "outdoor_temperature": {
+                "name": "Temperatura zewnętrzna"
+            }
+        }
     }
 }
