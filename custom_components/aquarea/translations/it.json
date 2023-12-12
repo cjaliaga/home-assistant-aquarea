@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Il dispositivo \u00e8 gi\u00e0 configurato"
+        },
+        "error": {
+            "cannot_connect": "Connessione non riuscita",
+            "invalid_auth": "Nome utente o password non validi",
+            "unknown": "Errore inatteso"
+        },
+        "step": {
+            "user": {
+                "description": "Inserire il tuo ID Panasonic e la password:",
+                "data": {
+                    "password": "Password",
+                    "username": "Nome utente"
+                }
+            },
+            "reauth": {
+                "description": "Inserire la password del tuo ID Panasonic {username}:",
+                "data": {
+                    "password": "Password"
+                }
+            }
+        }
+    },
+    "entity": {
+      "sensor": {
+        "heating_accumulated_energy_consumption": {
+          "name": "Consumo accumulato riscaldamento"
+        },
+        "cooling_accumulated_energy_consumption": {
+          "name": "Consumo accumulato raffrescamento"
+        },
+        "tank_accumulated_energy_consumption": {
+          "name": "Consumo accumulato serbatoio"
+        },
+        "accumulated_energy_consumption": {
+          "name": "Consumo accumulato"
+        },
+        "heating_energy_consumption": {
+          "name": "Consumo riscaldamento"
+        },
+        "cooling_energy_consumption": {
+          "name": "Consumo raffrescamento"
+        },
+        "tank_energy_consumption": {
+          "name": "Consumo serbatoio"
+        },
+        "energy_consumption": {
+          "name": "Consumo"
+        },
+        "outdoor_temperature": {
+          "name": "Temperatura esterna"
+        }
+      }
+    }
+}
