@@ -24,29 +24,20 @@ PLATFORMS: list[Platform] = [
 ]
 
 
-def initialize_data(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    if DOMAIN not in hass.data:
-        hass.data[DOMAIN] = {}
-
-    if entry.entry_id not in hass.data[DOMAIN]:
-        hass.data[DOMAIN][entry.entry_id] = {
-            CLIENT: None,
-            DEVICES: dict[str, AquareaDataUpdateCoordinator](),
-        }
-
+def _create_client(hass: HomeAssistant, entry: ConfigEntry) -> aioaquarea.Client:
+    username = entry.data.get(CONF_USERNAME)
+    password = entry.data.get(CONF_PASSWORD)
+    session = async_create_clientsession(hass)
+    return aioaquarea.Client(session, username, password)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Aquarea Smart Cloud from a config entry."""
 
-    initialize_data(hass, entry)
-
-    client = hass.data[DOMAIN].get(entry.entry_id).get(CLIENT)
-    if not client:
-        username = entry.data.get(CONF_USERNAME)
-        password = entry.data.get(CONF_PASSWORD)
-        session = async_create_clientsession(hass)
-        client = aioaquarea.Client(session, username, password)
-        hass.data[DOMAIN][entry.entry_id][CLIENT] = client
+    client = _create_client(hass, entry)
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
+        CLIENT: client,
+        DEVICES: dict[str, AquareaDataUpdateCoordinator](),
+    }
 
     try:
         await client.login()
