@@ -33,7 +33,7 @@
           "name": "Consumo accumulato raffrescamento"
         },
         "tank_accumulated_energy_consumption": {
-          "name": "Consumo accumulato serbatoio"
+          "name": "Consumo accumulato serbatoio ACS"
         },
         "accumulated_energy_consumption": {
           "name": "Consumo accumulato"
@@ -45,7 +45,7 @@
           "name": "Consumo raffrescamento"
         },
         "tank_energy_consumption": {
-          "name": "Consumo serbatoio"
+          "name": "Consumo serbatoio ACS"
         },
         "energy_consumption": {
           "name": "Consumo"
