@@ -59,7 +59,7 @@
           "name": "Forzar ACS"
         },
         "force_heater": {
-          "name": "Forzar Calefacción"
+          "name": "Forzar calefacción"
         }
       }
     }

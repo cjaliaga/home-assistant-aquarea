@@ -59,7 +59,7 @@
           "name": "Force DHW"
         },
         "force_heater": {
-          "name": "Force Heater"
+          "name": "Force heater"
         }
       }
     }

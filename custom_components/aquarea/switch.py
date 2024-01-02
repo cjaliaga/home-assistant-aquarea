@@ -1,3 +1,4 @@
+"""Aquarea Switch Sensors."""
 import logging
 
 import aioaquarea
@@ -30,18 +31,18 @@ async def async_setup_entry(
 
     entities.extend(
         [
-            ForceDHWSwitch(coordinator)
+            AquareaForceDHWSwitch(coordinator)
             for coordinator in data.values()
             if coordinator.device.has_tank
         ]
     )
 
-    entities.extend([ForceHeaterSwitch(coordinator) for coordinator in data.values()])
+    entities.extend([AquareaForceHeaterSwitch(coordinator) for coordinator in data.values()])
 
     async_add_entities(entities)
 
 
-class ForceDHWSwitch(AquareaBaseEntity, SwitchEntity):
+class AquareaForceDHWSwitch(AquareaBaseEntity, SwitchEntity):
     """Representation of an Aquarea switch."""
 
     def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
@@ -50,6 +51,7 @@ class ForceDHWSwitch(AquareaBaseEntity, SwitchEntity):
 
         self._attr_translation_key = "force_dhw"
         self._attr_unique_id = f"{super().unique_id}_force_dhw"
+        self._attr_entity_category = EntityCategory.CONFIG
 
     @property
     def icon(self) -> str:
@@ -58,7 +60,7 @@ class ForceDHWSwitch(AquareaBaseEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool:
-        """If switch is on."""
+        """If force DHW mode is enabled."""
         return self.coordinator.device.force_dhw is aioaquarea.ForceDHW.ON
 
     async def async_turn_on(self) -> None:
@@ -70,7 +72,7 @@ class ForceDHWSwitch(AquareaBaseEntity, SwitchEntity):
         await self.coordinator.device.set_force_dhw(aioaquarea.ForceDHW.OFF)
 
 
-class ForceHeaterSwitch(AquareaBaseEntity, SwitchEntity):
+class AquareaForceHeaterSwitch(AquareaBaseEntity, SwitchEntity):
     """Representation of an Aquarea switch."""
 
     def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
@@ -79,16 +81,17 @@ class ForceHeaterSwitch(AquareaBaseEntity, SwitchEntity):
 
         self._attr_translation_key = "force_heater"
         self._attr_unique_id = f"{super().unique_id}_force_heater"
+        self._attr_entity_category = EntityCategory.CONFIG
 
     @property
     def is_on(self) -> bool:
-        """If switch is on."""
+        """If force heater mode is enabled."""
         return self.coordinator.device.force_heater is aioaquarea.ForceHeater.ON
 
     async def async_turn_on(self) -> None:
-        """Turn on Force Heater."""
+        """Turn on Force heater."""
         await self.coordinator.device.set_force_heater(aioaquarea.ForceHeater.ON)
 
     async def async_turn_off(self) -> None:
-        """Turn off Force Heater."""
+        """Turn off Force heater."""
         await self.coordinator.device.set_force_heater(aioaquarea.ForceHeater.OFF)
