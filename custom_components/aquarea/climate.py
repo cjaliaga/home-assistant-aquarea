@@ -136,6 +136,7 @@ def get_presets() -> list[str]:
 
 class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
     """The ClimateEntity that controls one zone of the Aquarea heat pump.
+
     Some settings are shared between zones.
     The entity, the library and the API will keep a consistent state between zones.
     """
@@ -144,6 +145,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
     zone_id: int
 
     def __init__(self, coordinator: AquareaDataUpdateCoordinator, zone_id) -> None:
+        """Initialize the climate entity."""
         super().__init__(coordinator)
 
         device = coordinator.device
@@ -231,7 +233,7 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         )
 
     async def async_set_temperature(self, **kwargs) -> None:
-        """Set new target temperature if supported by the zone"""
+        """Set new target temperature if supported by the zone."""
         zone = self.coordinator.device.zones.get(self._zone_id)
         temperature: float | None = kwargs.get(ATTR_TEMPERATURE)
         hvac_mode: HVACMode | None = kwargs.get(ATTR_HVAC_MODE)

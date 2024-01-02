@@ -53,6 +53,14 @@
         "outdoor_temperature": {
           "name": "Temperatura exterior"
         }
+      },
+      "switch": {
+        "force_dhw": {
+          "name": "Forzar ACS"
+        },
+        "force_heater": {
+          "name": "Forzar calefacción"
+        }
       }
     }
 }

@@ -21,6 +21,7 @@ PLATFORMS: list[Platform] = [
     Platform.CLIMATE,
     Platform.BINARY_SENSOR,
     Platform.WATER_HEATER,
+    Platform.SWITCH,
 ]
 
 
@@ -29,6 +30,7 @@ def _create_client(hass: HomeAssistant, entry: ConfigEntry) -> aioaquarea.Client
     password = entry.data.get(CONF_PASSWORD)
     session = async_create_clientsession(hass)
     return aioaquarea.Client(session, username, password)
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Aquarea Smart Cloud from a config entry."""
