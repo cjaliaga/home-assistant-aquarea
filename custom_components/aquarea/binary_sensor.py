@@ -34,11 +34,12 @@ async def async_setup_entry(
 
 
 class StatusBinarySensor(AquareaBaseEntity, BinarySensorEntity):
-    """Representation of a Aquarea sensor that indicates if the device is on error"""
+    """Representation of a Aquarea sensor that indicates if the device is on error."""
 
     _attr_has_entity_name = True
 
     def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
+        """Initialize the sensor."""
         super().__init__(coordinator)
 
         self._attr_name = "Status"
