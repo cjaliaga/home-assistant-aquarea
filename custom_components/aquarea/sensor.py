@@ -42,6 +42,7 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
         consumption_type=ConsumptionType.HEAT,
     ),
     AquareaEnergyConsumptionSensorDescription(
@@ -51,6 +52,7 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
         consumption_type=ConsumptionType.COOL,
         exists_fn=lambda coordinator: any(zone.cool_mode for zone in coordinator.device.zones.values())
     ),
@@ -61,6 +63,7 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
         consumption_type=ConsumptionType.WATER_TANK,
         exists_fn=lambda coordinator: coordinator.device.has_tank
     ),
@@ -71,6 +74,7 @@ ACCUMULATED_ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
         consumption_type=ConsumptionType.TOTAL
     ),
 ]
@@ -83,6 +87,7 @@ ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
         consumption_type=ConsumptionType.HEAT,
         entity_registry_enabled_default=False
     ),
@@ -93,6 +98,7 @@ ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
         consumption_type=ConsumptionType.WATER_TANK,
         exists_fn=lambda coordinator: coordinator.device.has_tank,
         entity_registry_enabled_default=False
@@ -104,6 +110,7 @@ ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
         consumption_type=ConsumptionType.COOL,
         exists_fn=lambda coordinator: any(zone.cool_mode for zone in coordinator.device.zones.values()),
         entity_registry_enabled_default=False
@@ -115,6 +122,7 @@ ENERGY_SENSORS: list[AquareaEnergyConsumptionSensorDescription] = [
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        suggested_display_precision=2,
         consumption_type=ConsumptionType.TOTAL,
         entity_registry_enabled_default=False
     ),
