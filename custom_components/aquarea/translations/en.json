@@ -53,6 +53,14 @@
         "outdoor_temperature": {
           "name": "Outdoor temperature"
         }
+      },
+      "switch": {
+        "force_dhw": {
+          "name": "Force DHW"
+        },
+        "force_heater": {
+          "name": "Force Heater"
+        }
       }
     }
 }
