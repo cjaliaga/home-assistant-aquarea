@@ -25,6 +25,19 @@
         }
     },
     "entity": {
+        "binary_sensor": {
+            "defrost": {
+                "name": "Odszranianie"
+            },
+            "status": {
+                "name": "Status"
+            }
+        },
+        "button": {
+            "request_defrost": {
+                "name": "Wymuś odszranianie"
+            }
+        },
         "sensor": {
             "heating_accumulated_energy_consumption": {
                 "name": "Ogrzewanie - skumulowane zużycie energii"
@@ -52,6 +65,25 @@
             },
             "outdoor_temperature": {
                 "name": "Temperatura zewnętrzna"
+            }
+        },
+        "select": {
+            "quiet_mode": {
+                "name": "Tryb cichy",
+                "state": {
+                    "level1": "Poziom 1",
+                    "level2": "Poziom 2",
+                    "level3": "Poziom 3",
+                    "off": "Wyłączony"
+                }
+            }
+        },
+        "switch": {
+            "force_dhw": {
+                "name": "Wymuś C.W.U"
+            },
+            "force_heater": {
+                "name": "Wymuś grzanie"
             }
         }
     }
