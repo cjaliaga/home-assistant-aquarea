@@ -7,7 +7,6 @@ from aioaquarea import (
     DeviceAction,
     ExtendedOperationMode,
     OperationStatus,
-    QuietMode,
     UpdateOperationMode,
 )
 
@@ -93,47 +92,6 @@ def get_update_operation_mode_from_hvac_mode(mode: HVACMode) -> UpdateOperationM
 
     return UpdateOperationMode.OFF
 
-
-def get_quiet_mode_from_preset_mode(preset_mode: str) -> QuietMode:
-    """Convert preset mode to quiet mode."""
-
-    if preset_mode == "Quiet Mode Level 1":
-        return QuietMode.LEVEL1
-
-    if preset_mode == "Quiet Mode Level 2":
-        return QuietMode.LEVEL2
-
-    if preset_mode == "Quiet Mode Level 3":
-        return QuietMode.LEVEL3
-
-    return QuietMode.OFF
-
-
-def get_preset_from_quiet_mode(quiet_mode: QuietMode) -> str:
-    """Convert quiet mode to preset mode."""
-
-    if quiet_mode == QuietMode.LEVEL1:
-        return "Quiet Mode Level 1"
-
-    if quiet_mode == QuietMode.LEVEL2:
-        return "Quiet Mode Level 2"
-
-    if quiet_mode == QuietMode.LEVEL3:
-        return "Quiet Mode Level 3"
-
-    return ""
-
-
-def get_presets() -> list[str]:
-    """Return the list of available preset modes."""
-    return [
-        "Quiet Mode Off",
-        "Quiet Mode Level 1",
-        "Quiet Mode Level 2",
-        "Quiet Mode Level 3",
-    ]
-
-
 class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
     """The ClimateEntity that controls one zone of the Aquarea heat pump.
 
@@ -141,7 +99,6 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
     The entity, the library and the API will keep a consistent state between zones.
     """
 
-    _attr_has_entity_name = True
     zone_id: int
 
     def __init__(self, coordinator: AquareaDataUpdateCoordinator, zone_id) -> None:
@@ -156,12 +113,10 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         self._attr_unique_id = f"{super().unique_id}_climate_{zone_id}"
 
         self._attr_supported_features = (
-            ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.PRESET_MODE
+            ClimateEntityFeature.TARGET_TEMPERATURE
         )
         self._attr_precision = PRECISION_WHOLE
         self._attr_hvac_modes = [HVACMode.HEAT, HVACMode.OFF]
-        self._attr_preset_modes = get_presets()
-        self._attr_preset_mode = get_preset_from_quiet_mode(device.quiet_mode)
 
         if device.support_cooling(zone_id):
             self._attr_hvac_modes.extend([HVACMode.COOL, HVACMode.HEAT_COOL])
@@ -180,8 +135,6 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         self._attr_icon = (
             "mdi:hvac-off" if device.mode == ExtendedOperationMode.OFF else "mdi:hvac"
         )
-
-        self._attr_preset_mode = get_preset_from_quiet_mode(device.quiet_mode)
 
         self._attr_current_temperature = zone.temperature
 
@@ -252,17 +205,3 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
             await self.coordinator.device.set_temperature(
                 int(temperature), zone.zone_id
             )
-
-    async def async_set_preset_mode(self, preset_mode: str) -> None:
-        """Set new preset mode."""
-        if preset_mode not in self.preset_modes:
-            raise ValueError(f"Unsupported preset mode: {preset_mode}")
-
-        _LOGGER.debug(
-            "Setting preset mode of %s to %s",
-            self.coordinator.device.device_id,
-            preset_mode,
-        )
-
-        quiet_mode = get_quiet_mode_from_preset_mode(preset_mode)
-        await self.coordinator.device.set_quiet_mode(quiet_mode)
