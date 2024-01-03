@@ -25,6 +25,19 @@
         }
     },
     "entity": {
+      "binary_sensor": {
+        "defrost": {
+          "name": "Descongelación"
+        },
+        "status": {
+          "name": "Estado"
+        }
+      },
+      "button": {
+        "request_defrost": {
+          "name": "Solicitar descongelación"
+        }
+      },
       "sensor": {
         "heating_accumulated_energy_consumption": {
           "name": "Consumo acumulado calefacción"

@@ -17,6 +17,7 @@ from .const import ATTRIBUTION, CLIENT, DEVICES, DOMAIN
 from .coordinator import AquareaDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
+    Platform.BUTTON,
     Platform.SENSOR,
     Platform.CLIMATE,
     Platform.BINARY_SENSOR,
