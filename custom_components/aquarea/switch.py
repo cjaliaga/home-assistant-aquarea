@@ -56,7 +56,7 @@ class AquareaForceDHWSwitch(AquareaBaseEntity, SwitchEntity):
     @property
     def icon(self) -> str:
         """Return the icon."""
-        return "mdi:water-pump"
+        return "mdi:water-boiler" if self.is_on else "mdi:water-boiler-off"
 
     @property
     def is_on(self) -> bool:
@@ -82,6 +82,11 @@ class AquareaForceHeaterSwitch(AquareaBaseEntity, SwitchEntity):
         self._attr_translation_key = "force_heater"
         self._attr_unique_id = f"{super().unique_id}_force_heater"
         self._attr_entity_category = EntityCategory.CONFIG
+
+    @property
+    def icon(self) -> str:
+        """Return the icon."""
+        return "mdi:hvac" if self.is_on else "mdi:hvac-off"
 
     @property
     def is_on(self) -> bool:
