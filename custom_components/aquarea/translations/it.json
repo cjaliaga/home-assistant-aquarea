@@ -25,6 +25,19 @@
         }
     },
     "entity": {
+      "binary_sensor": {
+        "defrost": {
+          "name": "Sbrinamento"
+        },
+        "status": {
+          "name": "Stato"
+        }
+      },
+      "button": {
+        "request_defrost": {
+          "name": "Richiesta sbrinamento"
+        }
+      },
       "sensor": {
         "heating_accumulated_energy_consumption": {
           "name": "Consumo accumulato riscaldamento"
@@ -52,6 +65,25 @@
         },
         "outdoor_temperature": {
           "name": "Temperatura esterna"
+        }
+      },
+      "select": {
+        "quiet_mode": {
+          "name": "Modo silenzioso",
+          "state": {
+            "level1": "Livello 1",
+            "level2": "Livello 2",
+            "level3": "Livello 3",
+            "off": "Spento"
+          }
+        }
+      },
+      "switch": {
+        "force_dhw": {
+          "name": "Forza ACS"
+        },
+        "force_heater": {
+          "name": "Forza riscaldamento"
         }
       }
     }
