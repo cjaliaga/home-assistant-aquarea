@@ -67,6 +67,17 @@
           "name": "Temperatura exterior"
         }
       },
+      "select": {
+        "quiet_mode": {
+          "name": "Modo silencioso",
+          "state": {
+            "level1": "Nivel 1",
+            "level2": "Nivel 2",
+            "level3": "Nivel 3",
+            "off": "Apagado"
+          }
+        }
+      },
       "switch": {
         "force_dhw": {
           "name": "Forzar ACS"

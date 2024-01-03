@@ -67,6 +67,17 @@
           "name": "Outdoor temperature"
         }
       },
+      "select": {
+        "quiet_mode": {
+          "name": "Quiet mode",
+          "state": {
+            "level1": "Level 1",
+            "level2": "Level 2",
+            "level3": "Level 3",
+            "off": "Off"
+          }
+        }
+      },
       "switch": {
         "force_dhw": {
           "name": "Force DHW"
