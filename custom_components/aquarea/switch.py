@@ -38,6 +38,7 @@ async def async_setup_entry(
     )
 
     entities.extend([AquareaForceHeaterSwitch(coordinator) for coordinator in data.values()])
+    entities.extend([AquareaHolidayTimerSwitch(coordinator) for coordinator in data.values()])
 
     async_add_entities(entities)
 
@@ -100,3 +101,32 @@ class AquareaForceHeaterSwitch(AquareaBaseEntity, SwitchEntity):
     async def async_turn_off(self) -> None:
         """Turn off Force heater."""
         await self.coordinator.device.set_force_heater(aioaquarea.ForceHeater.OFF)
+
+class AquareaHolidayTimerSwitch(AquareaBaseEntity, SwitchEntity):
+    """Representation of an Aquarea switch."""
+
+    def __init__(self, coordinator: AquareaDataUpdateCoordinator) -> None:
+        """Initialize the switch."""
+        super().__init__(coordinator)
+
+        self._attr_translation_key = "holiday_timer"
+        self._attr_unique_id = f"{super().unique_id}_holiday_timer"
+        self._attr_entity_category = EntityCategory.CONFIG
+
+    @property
+    def icon(self) -> str:
+        """Return the icon."""
+        return "mdi:timer-check" if self.is_on else "mdi:timer-off"
+
+    @property
+    def is_on(self) -> bool:
+        """If the holiday timer mode is enabled."""
+        return self.coordinator.device.holiday_timer is aioaquarea.HolidayTimer.ON
+
+    async def async_turn_on(self) -> None:
+        """Turn on Holiday Timer."""
+        await self.coordinator.device.set_holiday_timer(aioaquarea.HolidayTimer.ON)
+
+    async def async_turn_off(self) -> None:
+        """Turn off Holiday Timer."""
+        await self.coordinator.device.set_holiday_timer(aioaquarea.HolidayTimer.OFF)

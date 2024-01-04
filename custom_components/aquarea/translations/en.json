@@ -84,6 +84,9 @@
         },
         "force_heater": {
           "name": "Force heater"
+        },
+        "holiday_timer": {
+          "name": "Holiday timer"
         }
       }
     }

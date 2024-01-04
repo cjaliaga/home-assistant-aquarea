@@ -27,7 +27,7 @@
     "entity": {
       "binary_sensor": {
         "defrost": {
-          "name": "Descongelación"
+          "name": "Descongelar"
         },
         "status": {
           "name": "Estado"
@@ -84,6 +84,9 @@
         },
         "force_heater": {
           "name": "Forzar calefacción"
+        },
+        "holiday_timer": {
+          "name": "Temporizador vacaciones"
         }
       }
     }
