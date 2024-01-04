@@ -76,6 +76,15 @@
             "level3": "Level 3",
             "off": "Off"
           }
+        },
+        "powerful_time": {
+          "name": "Powerful",
+          "state": {
+            "on-30m": "On 30 minutes",
+            "on-60m": "On 60 minutes",
+            "on-90m": "On 90 minutes",
+            "off": "Off"
+          }
         }
       },
       "switch": {
