@@ -25,6 +25,19 @@
         }
     },
     "entity": {
+      "binary_sensor": {
+        "defrost": {
+          "name": "Atitirpinimas"
+        },
+        "status": {
+          "name": "Būklė"
+        }
+      },
+      "button": {
+        "request_defrost": {
+          "name": "Užsakyti atitirpinimą"
+        }
+      },
       "sensor": {
         "heating_accumulated_energy_consumption": {
           "name": "Sukauptas šildymo suvartojimas"
@@ -52,6 +65,25 @@
         },
         "outdoor_temperature": {
           "name": "Lauko temperatūra"
+        }
+      },
+      "select": {
+        "quiet_mode": {
+          "name": "Tylusis rėžimas",
+          "state": {
+            "level1": "Lygis 1",
+            "level2": "Lygis 2",
+            "level3": "Lygis 3",
+            "off": "Išjungta"
+          }
+        }
+      },
+      "switch": {
+        "force_dhw": {
+          "name": "Priverstinis DHW"
+        },
+        "force_heater": {
+          "name": "Priverstinis šildymas"
         }
       }
     }
