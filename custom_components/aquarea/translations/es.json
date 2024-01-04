@@ -76,6 +76,15 @@
             "level3": "Nivel 3",
             "off": "Apagado"
           }
+        },
+        "powerful_time": {
+          "name": "Powerful",
+          "state": {
+            "on-30m": "Encendido 30 minutos",
+            "on-60m": "Encendido 60 minutos",
+            "on-90m": "Encendido 90 minutos",
+            "off": "Apagado"
+          }
         }
       },
       "switch": {
