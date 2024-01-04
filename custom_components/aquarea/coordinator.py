@@ -11,7 +11,7 @@ from homeassistant.const import CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.util import dt
+from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN
 
@@ -61,7 +61,7 @@ class AquareaDataUpdateCoordinator(DataUpdateCoordinator):
                 self._device = await self._client.get_device(
                     device_info=self._device_info,
                     consumption_refresh_interval=CONSUMPTION_REFRESH_INTERVAL,
-                    timezone=dt.DEFAULT_TIME_ZONE,
+                    timezone=dt_util.DEFAULT_TIME_ZONE,
                 )
             else:
                 await self.device.refresh_data()

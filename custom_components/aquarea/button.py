@@ -6,7 +6,6 @@ import aioaquarea
 from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import AquareaBaseEntity
@@ -44,7 +43,6 @@ class AquareaDefrostButton(AquareaBaseEntity, ButtonEntity):
         self._attr_unique_id = f"{super().unique_id}_request_defrost"
         self._attr_translation_key = "request_defrost"
         self._attr_icon = "mdi:snowflake-melt"
-        self._attr_entity_category = EntityCategory.CONFIG
 
     async def async_press(self) -> None:
         """Request to start the defrost process."""

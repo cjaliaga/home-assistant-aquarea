@@ -6,7 +6,6 @@ from aioaquarea import PowerfulTime, QuietMode
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import AquareaBaseEntity
@@ -60,7 +59,6 @@ class AquareaQuietModeSelect(AquareaBaseEntity, SelectEntity):
 
         self._attr_unique_id = f"{super().unique_id}_quiet_mode"
         self._attr_translation_key = "quiet_mode"
-        self._attr_entity_category = EntityCategory.CONFIG
         self._attr_options = list(QUIET_MODE_LOOKUP.keys())
         self._attr_icon = "mdi:volume-off"
 
@@ -94,7 +92,6 @@ class AquareaPowerfulTimeSelect(AquareaBaseEntity, SelectEntity):
 
         self._attr_unique_id = f"{super().unique_id}_powerful_time"
         self._attr_translation_key = "powerful_time"
-        self._attr_entity_category = EntityCategory.CONFIG
         self._attr_options = list(POWERFUL_TIME_LOOKUP.keys())
 
     @property

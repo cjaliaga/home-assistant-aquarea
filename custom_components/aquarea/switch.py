@@ -5,7 +5,6 @@ import aioaquarea
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -52,7 +51,6 @@ class AquareaForceDHWSwitch(AquareaBaseEntity, SwitchEntity):
 
         self._attr_translation_key = "force_dhw"
         self._attr_unique_id = f"{super().unique_id}_force_dhw"
-        self._attr_entity_category = EntityCategory.CONFIG
 
     @property
     def icon(self) -> str:
@@ -82,7 +80,6 @@ class AquareaForceHeaterSwitch(AquareaBaseEntity, SwitchEntity):
 
         self._attr_translation_key = "force_heater"
         self._attr_unique_id = f"{super().unique_id}_force_heater"
-        self._attr_entity_category = EntityCategory.CONFIG
 
     @property
     def icon(self) -> str:
@@ -111,7 +108,6 @@ class AquareaHolidayTimerSwitch(AquareaBaseEntity, SwitchEntity):
 
         self._attr_translation_key = "holiday_timer"
         self._attr_unique_id = f"{super().unique_id}_holiday_timer"
-        self._attr_entity_category = EntityCategory.CONFIG
 
     @property
     def icon(self) -> str:
