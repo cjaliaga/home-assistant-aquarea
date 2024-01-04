@@ -1,90 +1,102 @@
 {
-    "config": {
-        "abort": {
-            "already_configured": "Il dispositivo \u00e8 gi\u00e0 configurato"
-        },
-        "error": {
-            "cannot_connect": "Connessione non riuscita",
-            "invalid_auth": "Nome utente o password non validi",
-            "unknown": "Errore inatteso"
-        },
-        "step": {
-            "user": {
-                "description": "Inserire il tuo ID Panasonic e la password:",
-                "data": {
-                    "password": "Password",
-                    "username": "Nome utente"
-                }
-            },
-            "reauth": {
-                "description": "Inserire la password del tuo ID Panasonic {username}:",
-                "data": {
-                    "password": "Password"
-                }
-            }
-        }
-    },
-    "entity": {
-      "binary_sensor": {
-        "defrost": {
-          "name": "Sbrinamento"
-        },
-        "status": {
-          "name": "Stato"
-        }
+  "config": {
+      "abort": {
+          "already_configured": "Il dispositivo \u00e8 gi\u00e0 configurato"
       },
-      "button": {
-        "request_defrost": {
-          "name": "Richiesta sbrinamento"
-        }
+      "error": {
+          "cannot_connect": "Connessione non riuscita",
+          "invalid_auth": "Nome utente o password non validi",
+          "unknown": "Errore inatteso"
       },
-      "sensor": {
-        "heating_accumulated_energy_consumption": {
-          "name": "Consumo accumulato riscaldamento"
-        },
-        "cooling_accumulated_energy_consumption": {
-          "name": "Consumo accumulato raffrescamento"
-        },
-        "tank_accumulated_energy_consumption": {
-          "name": "Consumo accumulato serbatoio ACS"
-        },
-        "accumulated_energy_consumption": {
-          "name": "Consumo accumulato"
-        },
-        "heating_energy_consumption": {
-          "name": "Consumo riscaldamento"
-        },
-        "cooling_energy_consumption": {
-          "name": "Consumo raffrescamento"
-        },
-        "tank_energy_consumption": {
-          "name": "Consumo serbatoio ACS"
-        },
-        "energy_consumption": {
-          "name": "Consumo"
-        },
-        "outdoor_temperature": {
-          "name": "Temperatura esterna"
-        }
-      },
-      "select": {
-        "quiet_mode": {
-          "name": "Modo silenzioso",
-          "state": {
-            "level1": "Livello 1",
-            "level2": "Livello 2",
-            "level3": "Livello 3",
-            "off": "Spento"
+      "step": {
+          "user": {
+              "description": "Inserire il tuo ID Panasonic e la password:",
+              "data": {
+                  "password": "Password",
+                  "username": "Nome utente"
+              }
+          },
+          "reauth": {
+              "description": "Inserire la password del tuo ID Panasonic {username}:",
+              "data": {
+                  "password": "Password"
+              }
           }
+      }
+  },
+  "entity": {
+    "binary_sensor": {
+      "defrost": {
+        "name": "Sbrinamento"
+      },
+      "status": {
+        "name": "Stato"
+      }
+    },
+    "button": {
+      "request_defrost": {
+        "name": "Richiesta sbrinamento"
+      }
+    },
+    "sensor": {
+      "heating_accumulated_energy_consumption": {
+        "name": "Consumo accumulato riscaldamento"
+      },
+      "cooling_accumulated_energy_consumption": {
+        "name": "Consumo accumulato raffrescamento"
+      },
+      "tank_accumulated_energy_consumption": {
+        "name": "Consumo accumulato serbatoio ACS"
+      },
+      "accumulated_energy_consumption": {
+        "name": "Consumo accumulato"
+      },
+      "heating_energy_consumption": {
+        "name": "Consumo riscaldamento"
+      },
+      "cooling_energy_consumption": {
+        "name": "Consumo raffrescamento"
+      },
+      "tank_energy_consumption": {
+        "name": "Consumo serbatoio ACS"
+      },
+      "energy_consumption": {
+        "name": "Consumo"
+      },
+      "outdoor_temperature": {
+        "name": "Temperatura esterna"
+      }
+    },
+    "select": {
+      "quiet_mode": {
+        "name": "Modo silenzioso",
+        "state": {
+          "level1": "Livello 1",
+          "level2": "Livello 2",
+          "level3": "Livello 3",
+          "off": "Spento"
         }
       },
-      "switch": {
-        "force_dhw": {
-          "name": "Forza ACS"
-        },
-        "force_heater": {
-          "name": "Forza riscaldamento"
+      "powerful_time": {
+        "name": "Powerful",
+        "state": {
+          "on-30m": "Attivo 30 minuti",
+          "on-60m": "Attivo 60 minuti",
+          "on-90m": "Attivo 90 minuti",
+          "off": "Spento"
         }
       }
+    },
+    "switch": {
+      "force_dhw": {
+        "name": "Forza ACS"
+      },
+      "force_heater": {
+        "name": "Forza riscaldamento"
+      },
+      "holiday_timer": {
+        "name": "Timer vacanza"
+      }
     }
+  }
 }
