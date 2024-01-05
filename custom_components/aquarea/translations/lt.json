@@ -76,6 +76,15 @@
             "level3": "Lygis 3",
             "off": "Išjungta"
           }
+        },
+        "powerful_time": {
+          "name": "Powerful",
+          "state": {
+            "on-30m": "30 minučių",
+            "on-60m": "60 minučių",
+            "on-90m": "90 minučių",
+            "off": "Išjungta"
+          }
         }
       },
       "switch": {
@@ -84,6 +93,9 @@
         },
         "force_heater": {
           "name": "Priverstinis šildymas"
+        },
+        "holiday_timer": {
+          "name": "Atostogų laikmatis"
         }
       }
     }
