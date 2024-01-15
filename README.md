@@ -37,6 +37,15 @@ This is a one time thing during the beta that was needed in order to support mul
 ## Remarks
 Panasonic only allows one connection per account at the same time. This means that if you open the session from the Panasonic Confort Cloud app or the Panasonic Confort Cloud website, the session will be closed and you will be disconnected from Home Assistant. The integration will try to reconnect automatically, clossing the session from the app or the website. If you want to use the app or the website, you will have to temporarily disable the integration.
 
+A possible solution to this behaviour is to create a second account specifically for home assistant.
+1. Go to https://csapl.pcpf.panasonic.com/ and create a new account.
+2. Then login with your new account into https://aquarea-smart.panasonic.com/.
+3. You will be asked to enter your device id and your password. Enter the device id which is label on your Wifi Module (e.g. CZ-TAW1) and your password which you already created with your main account.
+4. Now you will get a user request to your main account. It should be somewhere under `Users` -> `Userlist`. Accept this user request.
+5. Use the new panasonic acount to setup your "Panasonic Aquarea Smart Cloud" home assistant integration.  
+
+Now it should be possible to access the aquarea smart cloud website and also use the home assistant integration at the same time.
+
 ### Minimum Home Assistant version required
 The minimum supported version of Home Assistant is **2023.4**
 
