@@ -7,11 +7,15 @@ from aioaquarea import (
     DeviceAction,
     ExtendedOperationMode,
     OperationStatus,
+    SpecialStatus,
     UpdateOperationMode,
 )
 
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
+    PRESET_COMFORT,
+    PRESET_ECO,
+    PRESET_NONE,
     ClimateEntity,
     ClimateEntityFeature,
     HVACAction,
@@ -28,6 +32,13 @@ from .coordinator import AquareaDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
+SPECIAL_STATUS_LOOKUP : dict[str, SpecialStatus | None] = {
+    PRESET_ECO : SpecialStatus.ECO,
+    PRESET_COMFORT : SpecialStatus.COMFORT,
+    PRESET_NONE : None
+}
+
+SPECIAL_STATUS_REVERSE_LOOKUP = {v: k for k, v in SPECIAL_STATUS_LOOKUP.items()}
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -115,6 +126,12 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         self._attr_supported_features = (
             ClimateEntityFeature.TARGET_TEMPERATURE
         )
+
+        if device.support_special_status:
+            self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
+            self._attr_preset_modes = list(SPECIAL_STATUS_LOOKUP.keys())
+            self._attr_preset_mode = SPECIAL_STATUS_REVERSE_LOOKUP.get(device.special_status)
+
         self._attr_precision = PRECISION_WHOLE
         self._attr_hvac_modes = [HVACMode.HEAT, HVACMode.OFF]
 
@@ -137,6 +154,9 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         )
 
         self._attr_current_temperature = zone.temperature
+
+        if device.support_special_status:
+            self._attr_preset_mode = SPECIAL_STATUS_REVERSE_LOOKUP.get(device.special_status)
 
         # If the device doesn't allow to set the temperature directly
         # We set the max and min to the current temperature.
@@ -205,3 +225,16 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
             await self.coordinator.device.set_temperature(
                 int(temperature), zone.zone_id
             )
+
+    async def async_set_preset_mode(self, preset_mode):
+        """Set new target preset mode."""
+        if preset_mode not in self.preset_modes:
+            raise ValueError(f"Unsupported preset mode: {preset_mode}")
+
+        _LOGGER.debug(
+            "Setting preset mode of device %s to %s",
+            self.coordinator.device.device_id,
+            preset_mode,
+        )
+
+        await self.coordinator.device.set_special_status(SPECIAL_STATUS_LOOKUP[preset_mode])
