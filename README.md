@@ -23,7 +23,7 @@ This integration is currently in beta. Please report any issues you find and any
 * Holiday timer
 * Force DHW
 * Force heater
-* Set the device in eco mode/confort mode (if the device supports it).
+* Set the device in eco mode/comfort mode (if the device supports it).
 
 ## Features in the works
 * ~~Weekly schedule.~~
