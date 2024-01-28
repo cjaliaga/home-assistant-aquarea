@@ -76,6 +76,15 @@
                     "level3": "Poziom 3",
                     "off": "Wyłączony"
                 }
+            },
+            "powerful_time": {
+                "name": "Duża moc",
+                "state": {
+                    "on-30m": "Wł. 30 min",
+                    "on-60m": "Wł. 60 min",
+                    "on-90m": "Wł. 90 min",
+                    "off": "Wyłączony"
+                }
             }
         },
         "switch": {
@@ -84,6 +93,9 @@
             },
             "force_heater": {
                 "name": "Wymuś grzanie"
+            },
+            "holiday_timer": {
+                "name": "Harmonogram wakacyjny"
             }
         }
     }
