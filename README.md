@@ -44,7 +44,7 @@ A possible solution to this behaviour is to create a second account specifically
 Now it should be possible to access the aquarea smart cloud website and also use the home assistant integration at the same time.
 
 ### Minimum Home Assistant version required
-The minimum supported version of Home Assistant is **2023.4**
+The minimum supported version of Home Assistant is **2024.2**
 
 ## Installation
 
