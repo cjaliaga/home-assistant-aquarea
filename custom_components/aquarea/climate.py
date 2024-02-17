@@ -32,13 +32,14 @@ from .coordinator import AquareaDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-SPECIAL_STATUS_LOOKUP : dict[str, SpecialStatus | None] = {
-    PRESET_ECO : SpecialStatus.ECO,
-    PRESET_COMFORT : SpecialStatus.COMFORT,
-    PRESET_NONE : None
+SPECIAL_STATUS_LOOKUP: dict[str, SpecialStatus | None] = {
+    PRESET_ECO: SpecialStatus.ECO,
+    PRESET_COMFORT: SpecialStatus.COMFORT,
+    PRESET_NONE: None,
 }
 
 SPECIAL_STATUS_REVERSE_LOOKUP = {v: k for k, v in SPECIAL_STATUS_LOOKUP.items()}
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -103,6 +104,7 @@ def get_update_operation_mode_from_hvac_mode(mode: HVACMode) -> UpdateOperationM
 
     return UpdateOperationMode.OFF
 
+
 class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
     """The ClimateEntity that controls one zone of the Aquarea heat pump.
 
@@ -125,12 +127,16 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
 
         self._attr_supported_features = (
             ClimateEntityFeature.TARGET_TEMPERATURE
+            | ClimateEntityFeature.TURN_ON
+            | ClimateEntityFeature.TURN_OFF
         )
 
         if device.support_special_status:
             self._attr_supported_features |= ClimateEntityFeature.PRESET_MODE
             self._attr_preset_modes = list(SPECIAL_STATUS_LOOKUP.keys())
-            self._attr_preset_mode = SPECIAL_STATUS_REVERSE_LOOKUP.get(device.special_status)
+            self._attr_preset_mode = SPECIAL_STATUS_REVERSE_LOOKUP.get(
+                device.special_status
+            )
 
         self._attr_precision = PRECISION_WHOLE
         self._attr_hvac_modes = [HVACMode.HEAT, HVACMode.OFF]
@@ -156,7 +162,9 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
         self._attr_current_temperature = zone.temperature
 
         if device.support_special_status:
-            self._attr_preset_mode = SPECIAL_STATUS_REVERSE_LOOKUP.get(device.special_status)
+            self._attr_preset_mode = SPECIAL_STATUS_REVERSE_LOOKUP.get(
+                device.special_status
+            )
 
         # If the device doesn't allow to set the temperature directly
         # We set the max and min to the current temperature.
@@ -237,4 +245,24 @@ class HeatPumpClimate(AquareaBaseEntity, ClimateEntity):
             preset_mode,
         )
 
-        await self.coordinator.device.set_special_status(SPECIAL_STATUS_LOOKUP[preset_mode])
+        await self.coordinator.device.set_special_status(
+            SPECIAL_STATUS_LOOKUP[preset_mode]
+        )
+
+    async def async_turn_on(self) -> None:
+        """Turn the entity on."""
+        _LOGGER.debug(
+            "Turning on device %s",
+            self.coordinator.device.device_id,
+        )
+
+        await self.coordinator.device.turn_on()
+
+    async def async_turn_off(self) -> None:
+        """Turn the entity off."""
+        _LOGGER.debug(
+            "Turning off device %s",
+            self.coordinator.device.device_id,
+        )
+
+        await self.coordinator.device.turn_off()
