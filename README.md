@@ -9,7 +9,9 @@ The integration uses [aioaquarea](https://github.com/cjaliaga/aioaquarea) to com
 
 This integration is currently in beta. Please report any issues you find and any feedback you may have. Thanks!
 
-**⚠️ Make sure to read the 'Remarks' and 'Warning' sections**
+## ⚠️ As of March 18th, 2024 Panasonic changed the way to log into Aquarea Smart Cloud and the Integration is in a broken state
+* The investigation is being peformed in the [aioaquarea](https://github.com/cjaliaga/aioaquarea) repository: https://github.com/cjaliaga/aioaquarea/issues/44
+* Pinned issue on this repo: https://github.com/cjaliaga/home-assistant-aquarea/issues/105
 
 ## Features
 * Climate entity per device zone that allows you to control the operation mode, read the current temperature of the water in the device/zone and (if the zone supports it), change the target temperature.
