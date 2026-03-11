@@ -1,5 +1,17 @@
 # Manage Panasonic Aquarea Smart Cloud devices from Home Assistant
 
+> ## ⚠️ This repository has been deprecated
+>
+> **This project is no longer maintained.** Development continues in the fork maintained by [@wpatrik14](https://github.com/wpatrik14):
+>
+> **👉 [https://github.com/wpatrik14/home-assistant-aquarea](https://github.com/wpatrik14/home-assistant-aquarea)**
+>
+> Please use the new repository for future updates, issue reports, and contributions.
+>
+> A huge thank you to [@wpatrik14](https://github.com/wpatrik14) for the incredible work rewriting the integration to adapt to yet another Panasonic backend change. Their dedication and effort have been instrumental in keeping this integration alive and moving forward. Thank you! 🙏
+
+---
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 ![GitHub Release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/cjaliaga/home-assistant-aquarea?include_prereleases)
 
