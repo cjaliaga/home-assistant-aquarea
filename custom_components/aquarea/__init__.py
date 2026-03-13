@@ -46,7 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         await client.login()
         # Get all the devices, we will filter the disabled ones later
-        devices = await client.get_devices(include_long_id=True)
+        devices = await client.get_devices()
 
         # We create a Coordinator per Device and store it in the hass.data[DOMAIN] dict to be able to access it from the platform
         for device in devices:
@@ -87,16 +87,16 @@ class AquareaBaseEntity(CoordinatorEntity[AquareaDataUpdateCoordinator]):
         super().__init__(coordinator)
 
         self._attrs: dict[str, Any] = {
-            "name": self.coordinator.device.name,
+            "name": self.coordinator.device.device_name,
             "id": self.coordinator.device.device_id,
         }
         self._attr_unique_id = self.coordinator.device.device_id
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.coordinator.device.device_id)},
             manufacturer=self.coordinator.device.manufacturer,
-            model="",
-            name=self.coordinator.device.name,
-            sw_version=self.coordinator.device.version,
+            model=self.coordinator.device.model or "",
+            name=self.coordinator.device.device_name,
+            sw_version=self.coordinator.device.firmware_version,
         )
 
     async def async_added_to_hass(self) -> None:

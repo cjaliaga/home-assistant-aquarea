@@ -1,6 +1,6 @@
 {
   "domain": "aquarea",
-  "name": "Aquarea Smart Cloud",
+  "name": "Aquarea Smart Cloud (Patched)",
   "codeowners": ["@cjaliaga"],
   "config_flow": true,
   "dependencies": ["recorder"],
@@ -9,8 +9,8 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/cjaliaga/home-assistant-aquarea/issues",
   "loggers": ["aquarea"],
-  "requirements": ["aioaquarea==0.7.2"],
+  "requirements": ["aioaquarea @ git+https://github.com/cjaliaga/aioaquarea.git@main"], 
   "ssdp": [],
-  "version": "0.7.0",
+  "version": "0.7.1",
   "zeroconf": []
 }
